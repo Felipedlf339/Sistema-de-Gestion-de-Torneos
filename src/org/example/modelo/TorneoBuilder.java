@@ -24,4 +24,17 @@ public class TorneoBuilder {
         return this;
     }
 
+    /**
+     * Valida que nombre, disciplina y formato esten presentes a la hora de construir.
+     * Si alguno falta, lanza una excepción con un mensaje claro, evitando NullPointerException posibles.
+     * @return instancia de torneo listo para usar
+     * @throws IllegalStateException si nombre, disciplina o formato son null.
+     */
+    public Torneo build() {
+        if(nombre==null || formato==null ||  disciplina==null) {
+            throw new IllegalStateException("Error, faltan datos para crear el torneo. ");
+        }
+        return new Torneo(nombre, disciplina, formato);
+    }
+
 }
