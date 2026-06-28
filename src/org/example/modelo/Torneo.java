@@ -86,8 +86,10 @@ public class Torneo {
      * Registra un nuevo observador
      * @param o observador a registrar.
      */
-    private void agregarObservador(Observador o){
-        observadores.add(o);
+    public void agregarObservador(Observador o){
+        if (o != null) {
+            observadores.add(o);
+        }
     }
 
     /**
@@ -102,6 +104,9 @@ public class Torneo {
     public String getNombre() {return nombre;}
     public String getId() { return id; }
     public Disciplina getDisciplina() {return disciplina;}
+    public FormatoTorneo getFormatoTorneo() {
+        return formatoTorneo;
+    }
     public List<Participante> getParticipantes() {return participantes;}
     public List<Partido> getPartidos() {return partidos;}
 
