@@ -37,8 +37,28 @@ public class Torneo {
      * Inscribe a un participante en el torneo.
      * @param participante participante a inscribir, no puede ser null.
      */
-    public void agregarParticipante(Participante participante){
+     public void agregarParticipante(Participante participante) {
+        if (participante == null) {
+            throw new IllegalArgumentException("El participante no puede ser null.");
+        }
+
+        int cantidad = participante.cantidadDeMiembros();
+        int maxPermitido = disciplina.getMaxJugadoresPorEquipo();
+        int minPermitido = disciplina.getMinJugadoresPorEquipo();
+
+        if (cantidad > maxPermitido) {
+            throw new IllegalArgumentException(participante.getNombre() +
+                    " supera el máximo de " + maxPermitido + " participantes permitidos para " + disciplina);
+        }
+
+        if (cantidad < minPermitido) {
+            throw new IllegalArgumentException(participante.getNombre() +
+                    " no cumple el mínimo de " + minPermitido + " participantes requeridos para " + disciplina);
+        }
+
         this.participantes.add(participante);
+
+        notificarObservadores();
     }
 
     /**
