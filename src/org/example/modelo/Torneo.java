@@ -10,6 +10,7 @@ import java.util.List;
 
 public class Torneo {
     private String nombre;
+    private String id;
     private Disciplina disciplina;
     private FormatoTorneo formatoTorneo;
     private List<Participante> participantes;
@@ -22,8 +23,9 @@ public class Torneo {
      * @param disciplina disciplina del torneo, no puede ser null.
      * @param formatoTorneo formato de juego, no puede ser null.
      */
-    public Torneo(String nombre, Disciplina disciplina,  FormatoTorneo formatoTorneo) {
+    Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo) {
         this.nombre = nombre;
+        this.id = id;
         this.disciplina = disciplina;
         this.formatoTorneo = formatoTorneo;
         this.participantes = new ArrayList<>();
@@ -78,6 +80,7 @@ public class Torneo {
     }
 
     public String getNombre() {return nombre;}
+    public String getId() { return id; }
     public Disciplina getDisciplina() {return disciplina;}
     public List<Participante> getParticipantes() {return participantes;}
     public List<Partido> getPartidos() {return partidos;}

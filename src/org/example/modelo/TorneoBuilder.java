@@ -1,7 +1,5 @@
 package org.example.modelo;
-
-// Para configurar a medida cada torneo.
-// Hay que agregar algún metodo para generar el torneo con una ID.
+import java.util.UUID;
 
 public class TorneoBuilder {
 
@@ -31,10 +29,13 @@ public class TorneoBuilder {
      * @throws IllegalStateException si nombre, disciplina o formato son null.
      */
     public Torneo build() {
-        if(nombre==null || formato==null ||  disciplina==null) {
+        if (nombre == null || formato == null || disciplina == null) {
             throw new IllegalStateException("Error, faltan datos para crear el torneo. ");
         }
-        return new Torneo(nombre, disciplina, formato);
-    }
+
+            String idTorneo = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+
+            return new Torneo(idTorneo, nombre, disciplina, formato);
+        }
 
 }
