@@ -11,7 +11,7 @@ import java.util.List;
  * Los enfrentamientos se generan emparejando participantes en orden:
  * [0] vs [1], [2] vs [3], y así sucesivamente.
  */
-public class EliminatoriaDirecta {
+public class EliminatoriaDirecta implements FormatoTorneo {
     /**
      * Genera los enfrentamientos de la primera ronda emparejando
      * participantes de dos en dos en orden de inscripción.
