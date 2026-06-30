@@ -27,7 +27,7 @@ public class EliminatoriaDirecta implements FormatoTorneo {
         for (int i = 0; i + 1 < participantes.size(); i += 2) {
             partidos.add(new Partido(participantes.get(i), participantes.get(i + 1)));
         }
-        if(partidos.size() % 2 != 0) {
+        if(participantes.size() % 2 != 0) {
             participanteConBye = participantes.get(participantes.size() - 1);
         }
         return partidos;

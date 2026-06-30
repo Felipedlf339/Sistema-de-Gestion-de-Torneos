@@ -23,7 +23,7 @@ public class Torneo {
      * @param disciplina disciplina del torneo, no puede ser null.
      * @param formatoTorneo formato de juego, no puede ser null.
      */
-    Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo) {
+    public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo) {
         this.nombre = nombre;
         this.id = id;
         this.disciplina = disciplina;
