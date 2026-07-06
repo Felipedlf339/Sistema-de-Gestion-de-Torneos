@@ -36,6 +36,6 @@ public class TorneoBuilder {
 
         String idTorneo = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
 
-        return new Torneo(idTorneo, nombre, disciplina, formato, creador);
+        return new Torneo(nombre, idTorneo, disciplina, formato, creador);
     }
 }
