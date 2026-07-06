@@ -1,4 +1,5 @@
 package org.example.modelo;
+
 import java.util.UUID;
 
 public class TorneoBuilder {
@@ -6,6 +7,7 @@ public class TorneoBuilder {
     private String nombre;
     private Disciplina disciplina;
     private FormatoTorneo formato;
+    private Usuario creador;
 
     public TorneoBuilder conNombre(String nombre) {
         this.nombre = nombre;
@@ -22,20 +24,18 @@ public class TorneoBuilder {
         return this;
     }
 
-    /**
-     * Valida que nombre, disciplina y formato esten presentes a la hora de construir.
-     * Si alguno falta, lanza una excepción con un mensaje claro, evitando NullPointerException posibles.
-     * @return instancia de torneo listo para usar
-     * @throws IllegalStateException si nombre, disciplina o formato son null.
-     */
+    public TorneoBuilder conCreador(Usuario creador) {
+        this.creador = creador;
+        return this;
+    }
+
     public Torneo build() {
-        if (nombre == null || formato == null || disciplina == null) {
-            throw new IllegalStateException("Error, faltan datos para crear el torneo. ");
+        if (nombre == null || formato == null || disciplina == null || creador == null) {
+            throw new IllegalStateException("Error, faltan datos para crear el torneo.");
         }
 
-            String idTorneo = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+        String idTorneo = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
 
-            return new Torneo(idTorneo, nombre, disciplina, formato);
-        }
-
+        return new Torneo(idTorneo, nombre, disciplina, formato, creador);
+    }
 }
