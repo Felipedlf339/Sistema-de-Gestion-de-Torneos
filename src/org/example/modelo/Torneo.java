@@ -13,6 +13,8 @@ public class Torneo {
     private String id;
     private Disciplina disciplina;
     private FormatoTorneo formatoTorneo;
+    private Usuario creador;
+
     private List<Participante> participantes;
     private List<Partido> partidos;
     private List<Observador> observadores;
@@ -23,7 +25,7 @@ public class Torneo {
      * @param disciplina disciplina del torneo, no puede ser null.
      * @param formatoTorneo formato de juego, no puede ser null.
      */
-    public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo) {
+    public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo, Usuario creador) {
         this.nombre = nombre;
         this.id = id;
         this.disciplina = disciplina;
@@ -33,11 +35,15 @@ public class Torneo {
         this.observadores = new ArrayList<>();
     }
 
+    public boolean esDueño(Usuario usuario) {
+        return usuario != null && this.creador.getNombreUsuario().equalsIgnoreCase(usuario.getNombreUsuario());
+    }
+
     /**
      * Inscribe a un participante en el torneo.
      * @param participante participante a inscribir, no puede ser null.
      */
-     public void agregarParticipante(Participante participante) {
+    public void agregarParticipante(Participante participante) {
         if (participante == null) {
             throw new IllegalArgumentException("El participante no puede ser null.");
         }
@@ -107,6 +113,7 @@ public class Torneo {
     public FormatoTorneo getFormatoTorneo() {
         return formatoTorneo;
     }
+    public Usuario getCreador() { return creador; }
     public List<Participante> getParticipantes() {return participantes;}
     public List<Partido> getPartidos() {return partidos;}
 
