@@ -12,8 +12,9 @@ public class PanelMenuPrincipal extends JPanel {
     /**
      * Constructor del menú principal.
      * @param ventana Referencia a la ventana principal para gestionar la navegación.
+     * @param registro registro de los torneos
      */
-    public PanelMenuPrincipal(VentanaPrincipal ventana) {
+    public PanelMenuPrincipal(VentanaPrincipal ventana, RegistroTorneos registro) {
         // Fondo
         setBackground(new Color(43, 43, 43));
         setLayout(new GridBagLayout());
@@ -56,5 +57,26 @@ public class PanelMenuPrincipal extends JPanel {
         // Conectamos los botones con sus respectivos paneles
         btnCrear.addActionListener(e -> ventana.cambiarPantalla("CREAR_TORNEO"));
         btnUnirse.addActionListener(e -> ventana.cambiarPantalla("UNIRSE_TORNEO"));
+
+        JButton btnVerTorneo = new JButton("Ver Estado de un Torneo");
+        btnVerTorneo.setFont(btnFont);
+        btnVerTorneo.setBackground(new Color(77, 77, 77));
+        btnVerTorneo.setForeground(Color.WHITE);
+        btnVerTorneo.setFocusPainted(false);
+        btnVerTorneo.setContentAreaFilled(false);
+        btnVerTorneo.setOpaque(true);
+        gbc.gridy = 3;
+        add(btnVerTorneo, gbc);
+
+        btnVerTorneo.addActionListener(e -> {
+            String codigo = JOptionPane.showInputDialog(this, "Ingrese el ID del torneo:", "Ver Torneo", JOptionPane.QUESTION_MESSAGE);
+            if (codigo == null || codigo.isBlank()) return;
+            Torneo torneo = registro.buscarTorneoPorInvitacion(codigo.trim());
+            if (torneo != null) {
+                ventana.mostrarBracket(torneo);
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró ningún torneo con ese ID.", "Atención", JOptionPane.WARNING_MESSAGE);
+            }
+        });
     }
 }
