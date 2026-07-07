@@ -90,7 +90,7 @@ public class PanelCrearTorneo extends JPanel {
                 if (guardado) {
                     JOptionPane.showMessageDialog(this, "¡Torneo creado exitosamente!\nID para invitar: " + nuevoTorneo.getId(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     txtNombre.setText("");
-                    ventana.cambiarPantalla("MENU_INICIO");
+                    ventana.mostrarBracket(nuevoTorneo);
                 } else {
                     JOptionPane.showMessageDialog(this, "Error al guardar el torneo en el registro.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
