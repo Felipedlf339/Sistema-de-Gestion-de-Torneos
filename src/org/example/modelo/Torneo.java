@@ -28,6 +28,7 @@ public class Torneo {
      * @param disciplina disciplina del torneo, no puede ser null.
      * @param formatoTorneo formato de juego, no puede ser null.
      */
+
     public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo, Usuario creador) {
         this.nombre = nombre;
         this.id = id;
