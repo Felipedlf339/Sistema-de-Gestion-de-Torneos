@@ -10,6 +10,9 @@ public enum Disciplina {
     BASQUETBOL(5, 12),
     LEAGUE_OF_LEGENDS(5, 6),
     VALORANT(5, 6),
+    AJEDREZ(1,1),
+    TENIS(1,1),
+    BOXEO(1,1),
     LIBRE(1, Integer.MAX_VALUE);
 
     private final int minJugadoresPorEquipo;
