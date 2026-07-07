@@ -127,4 +127,8 @@ public class RegistroTorneos {
     public Usuario getUsuarioActual() {
         return usuarioActual;
     }
+
+    public void cerrarSesion() {
+        this.usuarioActual = null;
+    }
 }

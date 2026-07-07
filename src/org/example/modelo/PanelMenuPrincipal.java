@@ -78,5 +78,20 @@ public class PanelMenuPrincipal extends JPanel {
                 JOptionPane.showMessageDialog(this, "No se encontró ningún torneo con ese ID.", "Atención", JOptionPane.WARNING_MESSAGE);
             }
         });
+
+        JButton btnCerrarSesion = new JButton("Cerrar Sesión");
+        btnCerrarSesion.setFont(btnFont);
+        btnCerrarSesion.setBackground(new Color(77, 77, 77));
+        btnCerrarSesion.setForeground(Color.WHITE);
+        btnCerrarSesion.setFocusPainted(false);
+        btnCerrarSesion.setContentAreaFilled(false);
+        btnCerrarSesion.setOpaque(true);
+        gbc.gridy = 4;
+        add(btnCerrarSesion, gbc);
+
+        btnCerrarSesion.addActionListener(e -> {
+            registro.cerrarSesion();
+            ventana.cambiarPantalla("PANTALLA_LOGIN");
+        });
     }
 }
