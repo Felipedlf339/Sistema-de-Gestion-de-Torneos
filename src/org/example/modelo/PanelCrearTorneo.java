@@ -13,13 +13,15 @@ public class PanelCrearTorneo extends JPanel {
     private JComboBox<String> cbFormato;
     private JButton btnCrearTorneo;
     private JButton btnVolver;
+    private JTextField txtMinParticipantes;
+    private JTextField txtMaxParticipantes;
 
     public PanelCrearTorneo(VentanaPrincipal ventana, RegistroTorneos registro) {
         // fondo
         setBackground(new Color(43, 43, 43));
         setLayout(new BorderLayout());
 
-        JPanel panelFormulario = new JPanel(new GridLayout(5, 2, 10, 15));
+        JPanel panelFormulario = new JPanel(new GridLayout(7, 2, 10, 15));
         panelFormulario.setBackground(new Color(43, 43, 43));
         panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 150));
 
@@ -51,6 +53,26 @@ public class PanelCrearTorneo extends JPanel {
         cbFormato.setForeground(Color.BLACK);
         panelFormulario.add(cbFormato);
 
+        JLabel lblMin = new JLabel("Mínimo de participantes:");
+        lblMin.setForeground(Color.WHITE);
+        panelFormulario.add(lblMin);
+
+        txtMinParticipantes = new JTextField();
+        txtMinParticipantes.setBackground(new Color(69, 73, 74));
+        txtMinParticipantes.setForeground(Color.WHITE);
+        txtMinParticipantes.setCaretColor(Color.WHITE);
+        panelFormulario.add(txtMinParticipantes);
+
+        JLabel lblMax = new JLabel("Máximo de participantes:");
+        lblMax.setForeground(Color.WHITE);
+        panelFormulario.add(lblMax);
+
+        txtMaxParticipantes = new JTextField();
+        txtMaxParticipantes.setBackground(new Color(69, 73, 74));
+        txtMaxParticipantes.setForeground(Color.WHITE);
+        txtMaxParticipantes.setCaretColor(Color.WHITE);
+        panelFormulario.add(txtMaxParticipantes);
+
         // boton para volver al menu de inicio
         btnVolver = new JButton("Volver al Menú");
         btnVolver.setBackground(new Color(77, 77, 77));
@@ -76,26 +98,45 @@ public class PanelCrearTorneo extends JPanel {
         // Logica de la creación del torneo
         btnCrearTorneo.addActionListener(e -> {
             try {
+                String nombreTorneo = txtNombre.getText().trim();
+                if (nombreTorneo.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Debe ingresar un nombre para el torneo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                int minPart = Integer.parseInt(txtMinParticipantes.getText().trim());
+                int maxPart = Integer.parseInt(txtMaxParticipantes.getText().trim());
+
                 FormatoTorneo formato = cbFormato.getSelectedItem().equals("Liga Simple") ?
                         new LigaSimple() : new EliminatoriaDirecta();
+
                 TorneoBuilder builder = new TorneoBuilder();
                 Torneo nuevoTorneo = builder
-                        .conNombre(txtNombre.getText())
+                        .conNombre(nombreTorneo)
                         .conDisciplina((Disciplina) cbDisciplina.getSelectedItem())
                         .conFormato(formato)
                         .conCreador(registro.getUsuarioActual())
+                        .conMinParticipantes(minPart)
+                        .conMaxParticipantes(maxPart)
                         .build();
-                // Aqui lo dejamos registrado registrado
+
                 boolean guardado = registro.registrarTorneo(nuevoTorneo);
                 if (guardado) {
                     JOptionPane.showMessageDialog(this, "¡Torneo creado exitosamente!\nID para invitar: " + nuevoTorneo.getId(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                    // Limpiamos los campos para la próxima vez
                     txtNombre.setText("");
+                    txtMinParticipantes.setText("");
+                    txtMaxParticipantes.setText("");
+
                     ventana.mostrarBracket(nuevoTorneo);
                 } else {
                     JOptionPane.showMessageDialog(this, "Error al guardar el torneo en el registro.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingrese números válidos en los cupos de participantes.", "Error de formato", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error al crear", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
