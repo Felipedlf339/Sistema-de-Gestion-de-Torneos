@@ -105,6 +105,10 @@ public class PanelUnirseEvento extends JPanel {
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelInferior.setBackground(new Color(43, 43, 43));
         btnVolver = new JButton("Volver al Menú");
+        btnVolver.addActionListener(e -> {
+            limpiarCampos();
+            ventana.cambiarPantalla("MENU_INICIO");
+        });
         btnVolver.setBackground(btnGray);
         btnVolver.setForeground(Color.WHITE);
         btnVolver.setFocusPainted(false);
@@ -112,16 +116,13 @@ public class PanelUnirseEvento extends JPanel {
         btnVolver.setOpaque(true);
         panelInferior.add(btnVolver);
 
-        // se unen las partes
+        // se unen las partes}
+        panelInscripcion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
         add(panelBusqueda, BorderLayout.NORTH);
         add(panelInscripcion, BorderLayout.CENTER);
         add(panelInferior, BorderLayout.SOUTH);
 
-        // Logica del boton para volver al menu de inicio
-        btnVolver.addActionListener(e -> {
-            limpiarCampos();
-            ventana.cambiarPantalla("MENU_INICIO");
-        });
+
         // Logica para buscar un torneo o evento con el id
         btnBuscar.addActionListener(e -> {
             String codigo = txtIdTorneo.getText().trim();
@@ -159,12 +160,25 @@ public class PanelUnirseEvento extends JPanel {
                 Jugador nuevoJugador = new Jugador(idGenerado, nombreJugador, "Sin contacto");
                 torneoEncontrado.agregarParticipante(nuevoJugador);
 
-                JOptionPane.showMessageDialog(this,
-                        "¡Inscripción exitosa en el torneo '" + torneoEncontrado.getNombre() + "'!",
-                        "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                int opcion = JOptionPane.showOptionDialog(
+                        this,
+                        "¡'" + nombreJugador + "' inscrito en '" + torneoEncontrado.getNombre() + "'!\n¿Deseas inscribir otro jugador al mismo torneo?",
+                        "Inscripción exitosa",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        new String[]{"Inscribir otro", "Ver torneo"},
+                        "Inscribir otro"
+                );
 
-                limpiarCampos();
-                ventana.cambiarPantalla("MENU_INICIO");
+                if (opcion == JOptionPane.YES_OPTION) {
+                    txtNombreJugador.setText("");
+                } else {
+                    Torneo torneoInscrito = torneoEncontrado;
+                    limpiarCampos();
+                    ventana.mostrarBracket(torneoInscrito);
+                }
+
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Inscripción Fallida", JOptionPane.ERROR_MESSAGE);
             }
@@ -183,5 +197,8 @@ public class PanelUnirseEvento extends JPanel {
         lblEstadoTorneo.setText("");
         lblEstadoTorneo.setForeground(Color.LIGHT_GRAY);
         torneoEncontrado = null;
+
+        revalidate();
+        repaint();
     }
 }
