@@ -20,20 +20,27 @@ public class Torneo implements Serializable {
     private List<Partido> partidos;
     private List<Observador> observadores;
 
+    private List<Integer> rondaLimites;
+    private Participante campeon;
+
     /**
      * Constructor del torneo
      * @param nombre nombre del torneo, no puede ser null.
      * @param disciplina disciplina del torneo, no puede ser null.
      * @param formatoTorneo formato de juego, no puede ser null.
      */
+
     public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo, Usuario creador) {
         this.nombre = nombre;
         this.id = id;
         this.disciplina = disciplina;
         this.formatoTorneo = formatoTorneo;
+        this.creador = creador;
         this.participantes = new ArrayList<>();
         this.partidos = new ArrayList<>();
         this.observadores = new ArrayList<>();
+        this.rondaLimites = new ArrayList<>();
+
     }
 
     public boolean esDueño(Usuario usuario) {
@@ -49,22 +56,22 @@ public class Torneo implements Serializable {
             throw new IllegalArgumentException("El participante no puede ser null.");
         }
 
-        int cantidad = participante.cantidadDeMiembros();
-        int maxPermitido = disciplina.getMaxJugadoresPorEquipo();
-        int minPermitido = disciplina.getMinJugadoresPorEquipo();
+        if (participante instanceof Equipo) {
+            int cantidad = participante.cantidadDeMiembros();
+            int maxPermitido = disciplina.getMaxJugadoresPorEquipo();
+            int minPermitido = disciplina.getMinJugadoresPorEquipo();
 
-        if (cantidad > maxPermitido) {
-            throw new IllegalArgumentException(participante.getNombre() +
-                    " supera el máximo de " + maxPermitido + " participantes permitidos para " + disciplina);
-        }
-
-        if (cantidad < minPermitido) {
-            throw new IllegalArgumentException(participante.getNombre() +
-                    " no cumple el mínimo de " + minPermitido + " participantes requeridos para " + disciplina);
+            if (cantidad > maxPermitido) {
+                throw new IllegalArgumentException(participante.getNombre() +
+                        " supera el máximo de " + maxPermitido + " participantes permitidos para " + disciplina);
+            }
+            if (cantidad < minPermitido) {
+                throw new IllegalArgumentException(participante.getNombre() +
+                        " no cumple el mínimo de " + minPermitido + " participantes requeridos para " + disciplina);
+            }
         }
 
         this.participantes.add(participante);
-
         notificarObservadores();
     }
 
@@ -75,6 +82,8 @@ public class Torneo implements Serializable {
      */
     public void generarPartidos(){
         partidos = formatoTorneo.generarEnfrentamientos(participantes);
+        rondaLimites.clear();
+        rondaLimites.add(partidos.size());
         notificarObservadores();
     }
 
@@ -86,7 +95,64 @@ public class Torneo implements Serializable {
     public void registrarResultado(Partido partido, Resultado resultado){
         partido.registrarResultado(resultado);
         formatoTorneo.actualizarClasificacion(partido);
+        avanzarRondaSiCorresponde();
         notificarObservadores();
+    }
+
+    private void avanzarRondaSiCorresponde() {
+        if (!(formatoTorneo instanceof EliminatoriaDirecta) || rondaLimites.isEmpty()) {
+            return;
+        }
+
+        int inicioRondaActual = rondaLimites.size() > 1 ? rondaLimites.get(rondaLimites.size() - 2) : 0;
+        int finRondaActual = rondaLimites.get(rondaLimites.size() - 1);
+        List<Partido> rondaActual = partidos.subList(inicioRondaActual, finRondaActual);
+
+        for (Partido p : rondaActual) {
+            if (p.getResultado() == null) {
+                return; //aún faltan partidos por jugarse en esta ronda
+            }
+        }
+
+        List<Participante> ganadores = new ArrayList<>();
+        for (Partido p : rondaActual) {
+            Resultado r = p.getResultado();
+            ganadores.add(r.ganoParticipanteA() ? p.getParticipanteA() : p.getParticipanteB());
+        }
+
+        EliminatoriaDirecta eliminatoria = (EliminatoriaDirecta) formatoTorneo;
+        Participante conBye = eliminatoria.getParticipanteConBye();
+        if (conBye != null && !ganadores.contains(conBye)) {
+            ganadores.add(conBye);
+        }
+
+        if (ganadores.size() <= 1) {
+            this.campeon = ganadores.isEmpty() ? null : ganadores.get(0);
+            return;
+        }
+
+        List<Partido> siguienteRonda = formatoTorneo.generarEnfrentamientos(ganadores);
+        partidos.addAll(siguienteRonda);
+        rondaLimites.add(partidos.size());
+    }
+    /**
+     * Agrupa los partidos por ronda
+     * @return lista de rondas, cada una con su lista de partidos en orden cronológico.
+     */
+    public List<List<Partido>> obtenerRondas() {
+        List<List<Partido>> rondas = new ArrayList<>();
+        int inicio = 0;
+        for (int fin : rondaLimites) {
+            rondas.add(new ArrayList<>(partidos.subList(inicio, fin)));
+            inicio = fin;
+        }
+        return rondas;
+    }
+    /**
+     * @return el ganador del torneo si ya finalizó (solo aplica a eliminatoria directa), o null si aún no hay campeón.
+     */
+    public Participante getCampeon() {
+        return campeon;
     }
 
     /**

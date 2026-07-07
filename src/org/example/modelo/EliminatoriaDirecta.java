@@ -30,6 +30,8 @@ public class EliminatoriaDirecta implements FormatoTorneo, Serializable {
         }
         if(participantes.size() % 2 != 0) {
             participanteConBye = participantes.get(participantes.size() - 1);
+        } else {
+            participanteConBye = null;
         }
         return partidos;
     }
@@ -45,15 +47,11 @@ public class EliminatoriaDirecta implements FormatoTorneo, Serializable {
     @Override
     public void actualizarClasificacion(Partido partidoFinalizado) {
         Resultado resultado = partidoFinalizado.getResultado();
-        if(resultado == null) return;
-
-        Participante ganador;
-        if(resultado.ganoParticipanteA()){
-            ganador = partidoFinalizado.getParticipanteA();
-        } else {
-            ganador = partidoFinalizado.getParticipanteB();
+        if (resultado == null) return;
+        if (!resultado.ganoParticipanteA() &&
+                resultado.getPuntajeParticipanteA() == resultado.getPuntajeParticipanteB()) {
+            throw new IllegalStateException("En eliminatoria directa no puede haber empate.");
         }
-
     }
 
     /**

@@ -17,6 +17,8 @@ public class VentanaPrincipal extends JFrame {
     // Panel principal que actúa como el "mazo" donde se apilan todas las pantallas secundarias de la aplicación
     private JPanel contenedorCartas;
 
+    private PanelBracket panelBracket;
+
     /**
      * Constructor de la ventana principal.
      * Configura las propiedades básicas de la ventana, inicializa el sistema de almacenamiento y prepara la navegación visual.
@@ -32,17 +34,18 @@ public class VentanaPrincipal extends JFrame {
         navegador = new CardLayout();
         contenedorCartas = new JPanel(navegador);
 
-
         // Este objeto central guardará los usuarios y torneos durante la ejecución.
         RegistroTorneos registroGlobal = new RegistroTorneos();
 
         registroGlobal.cargarDatos();
 
         // Registramos cada pantalla en el mazo, asignándole un identificador único.
+        panelBracket = new PanelBracket(this, registroGlobal);
         contenedorCartas.add(new PanelLogin(this, registroGlobal), "PANTALLA_LOGIN");
-        contenedorCartas.add(new PanelMenuPrincipal(this), "MENU_INICIO");
+        contenedorCartas.add(new PanelMenuPrincipal(this, registroGlobal), "MENU_INICIO");
         contenedorCartas.add(new PanelCrearTorneo(this, registroGlobal), "CREAR_TORNEO");
         contenedorCartas.add(new PanelUnirseEvento(this, registroGlobal), "UNIRSE_TORNEO");
+        contenedorCartas.add(panelBracket, "BRACKET");
 
         // Incorporamos el mazo de cartas a la ventana principal
         add(contenedorCartas);
@@ -78,6 +81,18 @@ public class VentanaPrincipal extends JFrame {
     }
 
     /**
+     * Navega directamente a la vista de bracket/espectador para un torneo específico.
+     * Usado por las pantallas de Crear y Unirse para llevar al usuario al estado en vivo
+     * del torneo apenas lo crea o se inscribe, y por el Menú Principal para reingresar a uno existente.
+     * @param torneo torneo que se quiere visualizar.
+     */
+    public void mostrarBracket(Torneo torneo) {
+        if (torneo != null) {
+            panelBracket.mostrarTorneo(torneo);
+        }
+    }
+
+    /**
      * Método de entrada principal de la aplicación.
      * Configura el aspecto visual adaptado al sistema operativo y lanza la interfaz en el hilo seguro de Swing.
      * @param args Argumentos de la línea de comandos (no utilizados).
@@ -95,5 +110,4 @@ public class VentanaPrincipal extends JFrame {
             new VentanaPrincipal();
         });
     }
-
 }
