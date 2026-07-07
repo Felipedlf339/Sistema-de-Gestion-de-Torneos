@@ -8,7 +8,7 @@ public class Equipo implements Participante {
 
     public Equipo(String id, String nombreEquipo, List<Jugador> integrantes) {
         this.id = id;
-        this.nombre = nombre;
+        this.nombre = nombreEquipo;
         this.integrantes = integrantes;
     }
     @Override
