@@ -10,6 +10,7 @@ import java.awt.*;
  * utilizando un patrón de diseño estructural basado en CardLayout.
  */
 public class VentanaPrincipal extends JFrame {
+    private PanelBracket panelBracket;
 
     // Motor de navegación que permite alternar entre paneles como si fuerancartas de un mazo, mostrando solo uno a la vez
     private CardLayout navegador;
@@ -38,9 +39,16 @@ public class VentanaPrincipal extends JFrame {
 
         // Registramos cada pantalla en el mazo, asignándole un identificador único.
         contenedorCartas.add(new PanelLogin(this, registroGlobal), "PANTALLA_LOGIN");
-        contenedorCartas.add(new PanelMenuPrincipal(this), "MENU_INICIO");
+        contenedorCartas.add(new PanelMenuPrincipal(this, registroGlobal), "MENU_INICIO");
         contenedorCartas.add(new PanelCrearTorneo(this, registroGlobal), "CREAR_TORNEO");
         contenedorCartas.add(new PanelUnirseEvento(this, registroGlobal), "UNIRSE_TORNEO");
+
+        panelBracket = new PanelBracket(this, registroGlobal);
+        contenedorCartas.add(new PanelLogin(this, registroGlobal), "PANTALLA_LOGIN");
+        contenedorCartas.add(new PanelMenuPrincipal(this, registroGlobal), "MENU_INICIO");
+        contenedorCartas.add(new PanelCrearTorneo(this, registroGlobal), "CREAR_TORNEO");
+        contenedorCartas.add(new PanelUnirseEvento(this, registroGlobal), "UNIRSE_TORNEO");
+        contenedorCartas.add(panelBracket, "BRACKET");
 
         // Incorporamos el mazo de cartas a la ventana principal
         add(contenedorCartas);
@@ -85,5 +93,10 @@ public class VentanaPrincipal extends JFrame {
         SwingUtilities.invokeLater(() -> {
             new VentanaPrincipal();
         });
+    }
+    public void mostrarBracket(Torneo torneo) {
+        if (torneo != null) {
+            panelBracket.mostrarTorneo(torneo);
+        }
     }
 }
