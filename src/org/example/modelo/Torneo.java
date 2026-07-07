@@ -65,8 +65,16 @@ public class Torneo implements Serializable {
             throw new IllegalArgumentException("El participante no puede ser null.");
         }
 
+        if (!partidos.isEmpty()) {
+            throw new IllegalArgumentException("No se pueden inscribir participantes una vez comenzado el torneo.");
+        }
+
         if (this.cuentasInscritas.contains(usuario)) {
             throw new IllegalArgumentException("Error: Tu cuenta de usuario ya registra una inscripción en este torneo.");
+        }
+
+        if (participantes.size() >= maxParticipantes) {
+            throw new IllegalArgumentException("El torneo ya alcanzó el máximo de " + maxParticipantes + " participantes inscritos.");
         }
 
         if (participante instanceof Equipo) {
