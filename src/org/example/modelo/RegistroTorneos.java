@@ -116,6 +116,10 @@ public class RegistroTorneos {
         }
     }
 
+    public List<Torneo> getListaTorneos() {
+        return this.listaTorneos;
+    }
+
     public int cantidadTorneos() {
         return listaTorneos.size();
     }

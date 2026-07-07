@@ -192,5 +192,10 @@ public class Torneo implements Serializable {
         this.observadores = new ArrayList<>();
     }
 
+    @Override
+    public String toString() {
+        return this.nombre + " - " + this.disciplina + " (ID: " + this.id + ")";
+    }
+
 
 }
