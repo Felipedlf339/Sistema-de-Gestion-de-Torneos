@@ -17,6 +17,7 @@ public class Torneo implements Serializable {
     private Disciplina disciplina;
     private FormatoTorneo formatoTorneo;
     private Usuario creador;
+    private List<Usuario> cuentasInscritas;
 
     private List<Participante> participantes;
     private List<Partido> partidos;
@@ -43,6 +44,7 @@ public class Torneo implements Serializable {
         this.partidos = new ArrayList<>();
         this.observadores = new ArrayList<>();
         this.rondaLimites = new ArrayList<>();
+        this.cuentasInscritas = new ArrayList<>();
 
     }
 
@@ -54,9 +56,13 @@ public class Torneo implements Serializable {
      * Inscribe a un participante en el torneo.
      * @param participante participante a inscribir, no puede ser null.
      */
-    public void agregarParticipante(Participante participante) {
+    public void agregarParticipante(Participante participante, Usuario usuario) {
         if (participante == null) {
             throw new IllegalArgumentException("El participante no puede ser null.");
+        }
+
+        if (this.cuentasInscritas.contains(usuario)) {
+            throw new IllegalArgumentException("Error: Tu cuenta de usuario ya registra una inscripción en este torneo.");
         }
 
         if (participante instanceof Equipo) {
@@ -75,6 +81,7 @@ public class Torneo implements Serializable {
         }
 
         this.participantes.add(participante);
+        this.cuentasInscritas.add(usuario);
         notificarObservadores();
     }
 

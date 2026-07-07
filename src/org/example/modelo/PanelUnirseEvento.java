@@ -158,26 +158,15 @@ public class PanelUnirseEvento extends JPanel {
             try {
                 String idGenerado = "JUG-" + System.currentTimeMillis();
                 Jugador nuevoJugador = new Jugador(idGenerado, nombreJugador, "Sin contacto");
-                torneoEncontrado.agregarParticipante(nuevoJugador);
+                torneoEncontrado.agregarParticipante(nuevoJugador, registro.getUsuarioActual());
 
-                int opcion = JOptionPane.showOptionDialog(
-                        this,
-                        "¡'" + nombreJugador + "' inscrito en '" + torneoEncontrado.getNombre() + "'!\n¿Deseas inscribir otro jugador al mismo torneo?",
-                        "Inscripción exitosa",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        new String[]{"Inscribir otro", "Ver torneo"},
-                        "Inscribir otro"
-                );
+                JOptionPane.showMessageDialog(this,
+                        "¡Inscripción exitosa en '" + torneoEncontrado.getNombre() + "'!",
+                        "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-                if (opcion == JOptionPane.YES_OPTION) {
-                    txtNombreJugador.setText("");
-                } else {
-                    Torneo torneoInscrito = torneoEncontrado;
-                    limpiarCampos();
-                    ventana.mostrarBracket(torneoInscrito);
-                }
+                Torneo torneoInscrito = torneoEncontrado;
+                limpiarCampos();
+                ventana.mostrarBracket(torneoInscrito);
 
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Inscripción Fallida", JOptionPane.ERROR_MESSAGE);
