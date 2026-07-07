@@ -3,6 +3,8 @@ package org.example.modelo;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 /**
  * Clase principal
@@ -18,7 +20,8 @@ public class Torneo implements Serializable {
 
     private List<Participante> participantes;
     private List<Partido> partidos;
-    private List<Observador> observadores;
+
+    private transient List<Observador> observadores;
 
     private List<Integer> rondaLimites;
     private Participante campeon;
@@ -184,6 +187,10 @@ public class Torneo implements Serializable {
     public List<Participante> getParticipantes() {return participantes;}
     public List<Partido> getPartidos() {return partidos;}
 
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.observadores = new ArrayList<>();
+    }
 
 
 }

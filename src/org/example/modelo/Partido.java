@@ -1,8 +1,8 @@
 package org.example.modelo;
-
+import java.io.Serializable;
 // Enfrentamiento 1vs1
 
-public class Partido {
+public class Partido implements Serializable {
 
     private Participante participanteA;
     private Participante participanteB;

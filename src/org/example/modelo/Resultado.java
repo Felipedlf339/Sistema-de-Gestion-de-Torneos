@@ -1,7 +1,8 @@
 package org.example.modelo;
+import java.io.Serializable;
 
 // Cuantos puntos se hicieron y quien es el ganador del match.
-public class Resultado {
+public class Resultado implements Serializable {
 
     private int puntajeParticipanteA;
     private int puntajeParticipanteB;
