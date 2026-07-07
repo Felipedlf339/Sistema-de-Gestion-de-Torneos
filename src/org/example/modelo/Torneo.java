@@ -17,6 +17,8 @@ public class Torneo implements Serializable {
     private Disciplina disciplina;
     private FormatoTorneo formatoTorneo;
     private Usuario creador;
+    private int minParticipantes;
+    private int maxParticipantes;
     private List<Usuario> cuentasInscritas;
 
     private List<Participante> participantes;
@@ -34,12 +36,14 @@ public class Torneo implements Serializable {
      * @param formatoTorneo formato de juego, no puede ser null.
      */
 
-    public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo, Usuario creador) {
+    public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo, Usuario creador, int minParticipantes, int maxParticipantes) {
         this.nombre = nombre;
         this.id = id;
         this.disciplina = disciplina;
         this.formatoTorneo = formatoTorneo;
         this.creador = creador;
+        this.minParticipantes = minParticipantes;
+        this.maxParticipantes = maxParticipantes;
         this.participantes = new ArrayList<>();
         this.partidos = new ArrayList<>();
         this.observadores = new ArrayList<>();
@@ -183,7 +187,12 @@ public class Torneo implements Serializable {
             o.actualizar(this);
         }
     }
-
+    public int getMinParticipantes() {
+        return minParticipantes;
+    }
+    public int getMaxParticipantes() {
+        return maxParticipantes;
+    }
     public String getNombre() {return nombre;}
     public String getId() { return id; }
     public Disciplina getDisciplina() {return disciplina;}
