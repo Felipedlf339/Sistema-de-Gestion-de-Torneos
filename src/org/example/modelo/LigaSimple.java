@@ -1,9 +1,9 @@
 package org.example.modelo;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-
-public class LigaSimple implements FormatoTorneo {
+public class LigaSimple implements FormatoTorneo, Serializable {
     //Arreglos para los participantes y sus puntos correspondientes.
     private List<Participante> clasificacion = new ArrayList<>();
     private List<Integer> puntos = new ArrayList<>();

@@ -36,6 +36,8 @@ public class VentanaPrincipal extends JFrame {
         // Este objeto central guardará los usuarios y torneos durante la ejecución.
         RegistroTorneos registroGlobal = new RegistroTorneos();
 
+        registroGlobal.cargarDatos();
+
         // Registramos cada pantalla en el mazo, asignándole un identificador único.
         contenedorCartas.add(new PanelLogin(this, registroGlobal), "PANTALLA_LOGIN");
         contenedorCartas.add(new PanelMenuPrincipal(this), "MENU_INICIO");
@@ -47,6 +49,13 @@ public class VentanaPrincipal extends JFrame {
 
         // Al iniciar la aplicación, hacemos que la primera sea siempre el Login
         navegador.show(contenedorCartas, "PANTALLA_LOGIN");
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                registroGlobal.guardarDatos();
+            }
+        });
 
         // Hacemos visible la interfaz gráfica
         setVisible(true);
@@ -86,4 +95,5 @@ public class VentanaPrincipal extends JFrame {
             new VentanaPrincipal();
         });
     }
+
 }

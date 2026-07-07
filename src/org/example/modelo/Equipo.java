@@ -1,7 +1,8 @@
 package org.example.modelo;
 import java.util.List;
+import java.io.Serializable;
 
-public class Equipo implements Participante {
+public class Equipo implements Participante, Serializable {
     private String id;
     private String nombre;
     private List<Jugador> integrantes;

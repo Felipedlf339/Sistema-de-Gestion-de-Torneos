@@ -2,13 +2,14 @@ package org.example.modelo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 /**
  * Clase principal
  * Representa un Torneo deportivo o de juegos.
  */
 
-public class Torneo {
+public class Torneo implements Serializable {
     private String nombre;
     private String id;
     private Disciplina disciplina;

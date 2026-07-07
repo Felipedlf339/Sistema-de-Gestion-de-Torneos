@@ -3,6 +3,7 @@ package org.example.modelo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.io.*;
 
 public class RegistroTorneos {
 
@@ -82,6 +83,37 @@ public class RegistroTorneos {
             return true;
         }
         return false;
+    }
+
+    public void guardarDatos() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("datos.dat"))) {
+            oos.writeObject(this.listaTorneos);
+            oos.writeObject(this.listaUsuarios);
+            System.out.println("Datos guardados correctamente.");
+        } catch (Exception e) {
+            System.out.println("Error al guardar los datos: " + e.getMessage());
+        }
+    }
+
+    public void cargarDatos() {
+        File archivo = new File("datos.dat");
+        if (!archivo.exists()) {
+            return;
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
+            List<Torneo> torneosGuardados = (List<Torneo>) ois.readObject();
+            List<Usuario> usuariosGuardados = (List<Usuario>) ois.readObject();
+
+            this.listaTorneos.clear();
+            this.listaTorneos.addAll(torneosGuardados);
+
+            this.listaUsuarios.clear();
+            this.listaUsuarios.addAll(usuariosGuardados);
+            System.out.println("Datos cargados correctamente.");
+        } catch (Exception e) {
+            System.out.println("Error al cargar los datos: " + e.getMessage());
+        }
     }
 
     public int cantidadTorneos() {

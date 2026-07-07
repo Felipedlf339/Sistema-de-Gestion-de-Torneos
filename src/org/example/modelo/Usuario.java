@@ -1,6 +1,7 @@
 package org.example.modelo;
+import java.io.Serializable;
 
-public class Usuario {
+public class Usuario implements Serializable {
 
     private final String nombreUsuario;
 

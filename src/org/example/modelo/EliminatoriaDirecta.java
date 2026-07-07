@@ -1,6 +1,7 @@
 package org.example.modelo;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 /**
  * Implementación concreta del patrón Strategy para el formato
@@ -12,7 +13,7 @@ import java.util.List;
  * [0] vs [1], [2] vs [3], y así sucesivamente.
  * Si hay número impar, el último pasa directo a la siguiente ronda.
  */
-public class EliminatoriaDirecta implements FormatoTorneo {
+public class EliminatoriaDirecta implements FormatoTorneo, Serializable {
     private Participante participanteConBye;
     /**
      * Genera los enfrentamientos de la primera ronda emparejando

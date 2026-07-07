@@ -1,7 +1,8 @@
 package org.example.modelo;
+import java.io.Serializable;
 
 
-public class Jugador implements Participante{
+public class Jugador implements Participante , Serializable {
     //Datos identificadores del jugador
     private String id;
     private String nombre;
