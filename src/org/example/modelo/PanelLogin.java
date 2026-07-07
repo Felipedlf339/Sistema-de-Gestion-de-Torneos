@@ -26,7 +26,7 @@ public class PanelLogin extends JPanel {
 
 
         // Etiqueta de bienvenida
-        JLabel lblBienvenida = new JLabel("Bienvenido al Sistema de Torneos");
+        JLabel lblBienvenida = new JLabel("BIENVENIDO AL SISTEMA DE TORNEOS");
         lblBienvenida.setFont(new Font("Segoe UI", Font.BOLD, 18));
         lblBienvenida.setForeground(Color.WHITE);
         gbc.gridy = 0;

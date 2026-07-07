@@ -26,7 +26,7 @@ public class PanelMenuPrincipal extends JPanel {
         Font titleFont = new Font("Segoe UI", Font.BOLD, 22);
         Font btnFont = new Font("Segoe UI", Font.PLAIN, 18);
 
-        JLabel lblTitulo = new JLabel("¿Qué deseas hacer?");
+        JLabel lblTitulo = new JLabel("SISTEMA DE GESTION DE TORNEOS");
         lblTitulo.setFont(titleFont);
         lblTitulo.setForeground(Color.WHITE);
         gbc.gridy = 0;
