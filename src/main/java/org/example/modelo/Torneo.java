@@ -133,18 +133,22 @@ public class Torneo implements Serializable {
     }
 
     private void avanzarRondaSiCorresponde() {
-        if (!(formatoTorneo instanceof EliminatoriaDirecta) || rondaLimites.isEmpty()) {
-            return;
-        }
+        if (rondaLimites.isEmpty()) return;
 
+        if (formatoTorneo instanceof EliminatoriaDirecta) {
+            avanzarEliminatoriaDirecta();
+        } else if (formatoTorneo instanceof EliminatoriaDoble) {
+            avanzarEliminatoriaDoble();
+        }
+    }
+
+    private void avanzarEliminatoriaDirecta() {
         int inicioRondaActual = rondaLimites.size() > 1 ? rondaLimites.get(rondaLimites.size() - 2) : 0;
         int finRondaActual = rondaLimites.get(rondaLimites.size() - 1);
         List<Partido> rondaActual = partidos.subList(inicioRondaActual, finRondaActual);
 
         for (Partido p : rondaActual) {
-            if (p.getResultado() == null) {
-                return; //aún faltan partidos por jugarse en esta ronda
-            }
+            if (p.getResultado() == null) return;
         }
 
         List<Participante> ganadores = new ArrayList<>();
@@ -166,6 +170,27 @@ public class Torneo implements Serializable {
 
         List<Partido> siguienteRonda = formatoTorneo.generarEnfrentamientos(ganadores);
         partidos.addAll(siguienteRonda);
+        rondaLimites.add(partidos.size());
+    }
+
+    private void avanzarEliminatoriaDoble() {
+        int inicioRondaActual = rondaLimites.size() > 1 ? rondaLimites.get(rondaLimites.size() - 2) : 0;
+        int finRondaActual = rondaLimites.get(rondaLimites.size() - 1);
+        List<Partido> rondaActual = partidos.subList(inicioRondaActual, finRondaActual);
+
+        for (Partido p : rondaActual) {
+            if (p.getResultado() == null) return;
+        }
+
+        EliminatoriaDoble doble = (EliminatoriaDoble) formatoTorneo;
+        List<Partido> siguientes = doble.generarSiguienteRonda(rondaActual);
+
+        if (siguientes.isEmpty()) {
+            this.campeon = doble.getWinnerBracket().isEmpty() ? null : doble.getWinnerBracket().get(0);
+            return;
+        }
+
+        partidos.addAll(siguientes);
         rondaLimites.add(partidos.size());
     }
     /**

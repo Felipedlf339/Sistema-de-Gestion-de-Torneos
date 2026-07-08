@@ -171,9 +171,15 @@ public class PanelBracket extends JPanel implements Observador {
         List<List<Partido>> rondas = torneoActual.obtenerRondas();
         int numeroRonda = 1;
         for(List<Partido> ronda : rondas){
-            boolean esUltima = numeroRonda == rondas.size();
             String etiqueta;
-            if(esUltima && ronda.size() == 1){
+            if (ronda.size() == 1 && torneoActual.getFormatoTorneo() instanceof EliminatoriaDoble) {
+                EliminatoriaDoble doble = (EliminatoriaDoble) torneoActual.getFormatoTorneo();
+                if (doble.isEnGranFinal()) {
+                    etiqueta = "Gran Final";
+                } else {
+                    etiqueta = "Ronda " + numeroRonda;
+                }
+            } else if (numeroRonda == rondas.size() && ronda.size() == 1) {
                 etiqueta = "Final";
             } else {
                 etiqueta = "Ronda " + numeroRonda;

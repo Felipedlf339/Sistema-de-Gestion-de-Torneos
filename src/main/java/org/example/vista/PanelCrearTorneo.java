@@ -49,7 +49,7 @@ public class PanelCrearTorneo extends JPanel {
         JLabel lblFormato = new JLabel("Formato:");
         lblFormato.setForeground(Color.WHITE);
         panelFormulario.add(lblFormato);
-        String[] formatos = {"Liga Simple", "Eliminatoria Directa"};
+        String[] formatos = {"Liga Simple", "Eliminatoria Directa", "Eliminatoria Doble"};
         cbFormato = new JComboBox<>(formatos);
         cbFormato.setBackground(Color.WHITE);
         cbFormato.setForeground(Color.BLACK);
@@ -109,8 +109,15 @@ public class PanelCrearTorneo extends JPanel {
                 int minPart = Integer.parseInt(txtMinParticipantes.getText().trim());
                 int maxPart = Integer.parseInt(txtMaxParticipantes.getText().trim());
 
-                FormatoTorneo formato = cbFormato.getSelectedItem().equals("Liga Simple") ?
-                        new LigaSimple() : new EliminatoriaDirecta();
+                FormatoTorneo formato;
+                String formatoSeleccionado = (String) cbFormato.getSelectedItem();
+                if (formatoSeleccionado.equals("Liga Simple")) {
+                    formato = new LigaSimple();
+                } else if (formatoSeleccionado.equals("Eliminatoria Doble")) {
+                    formato = new EliminatoriaDoble();
+                } else {
+                    formato = new EliminatoriaDirecta();
+                }
 
                 TorneoBuilder builder = new TorneoBuilder();
                 Torneo nuevoTorneo = builder
