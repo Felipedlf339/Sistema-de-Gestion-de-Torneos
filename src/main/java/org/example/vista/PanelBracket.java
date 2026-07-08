@@ -275,10 +275,16 @@ public class PanelBracket extends JPanel implements Observador {
     private void abrirDialogoResultado(Partido partido, String nombreA, String nombreB){
         JTextField txtA = new JTextField();
         JTextField txtB = new JTextField();
+
+        JLabel lblA = new JLabel("Puntaje de " + nombreA + ":");
+        lblA.setForeground(Color.WHITE);
+        JLabel lblB = new JLabel("Puntaje de " + nombreB + ":");
+        lblB.setForeground(Color.WHITE);
         JPanel panelDialogo = new JPanel(new GridLayout(2, 2, 5, 5));
-        panelDialogo.add(new JLabel("Puntaje de :" + nombreA + ":"));
+        panelDialogo.setBackground(FONDO);
+        panelDialogo.add(lblA);
         panelDialogo.add(txtA);
-        panelDialogo.add(new JLabel("Puntaje de :" + nombreB + ":"));
+        panelDialogo.add(lblB);
         panelDialogo.add(txtB);
 
         int opcion = JOptionPane.showConfirmDialog(this, panelDialogo, "Ingresar Resultado", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -289,7 +295,9 @@ public class PanelBracket extends JPanel implements Observador {
                 int puntajeB = Integer.parseInt(txtB.getText());
                 torneoActual.registrarResultado(partido, new Resultado(puntajeA, puntajeB));
             } catch(NumberFormatException ex){
-                JOptionPane.showMessageDialog(this, "Ingrese puntaje numérico válido. ",
+                JLabel lblError = new JLabel("Ingrese puntaje numérico válido.");
+                lblError.setForeground(Color.WHITE);
+                JOptionPane.showMessageDialog(this, lblError,
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
