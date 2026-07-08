@@ -1,6 +1,7 @@
 package org.example.modelo;
 
 import java.util.UUID;
+import java.time.LocalDate;
 
 /**
  * Clase que implementa el patrón de diseño Builder para la creación de Torneos.
@@ -14,6 +15,16 @@ public class TorneoBuilder {
     private Usuario creador;
     private int minParticipantes;
     private int maxParticipantes;
+
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
+
+    public TorneoBuilder conFechas(LocalDate inicio, LocalDate fin) {
+        this.fechaInicio = inicio;
+        this.fechaFin = fin;
+        return this;
+    }
+
 
     /**
      * Asigna el nombre del torneo.
@@ -81,7 +92,7 @@ public class TorneoBuilder {
      * @return una instancia válida de la clase Torneo.
      */
     public Torneo build() {
-        if (nombre == null || formato == null || disciplina == null || creador == null) {
+        if (nombre == null || formato == null || disciplina == null || creador == null || fechaInicio == null || fechaFin == null) {
             throw new IllegalStateException("Error, faltan datos para crear el torneo.");
         }
 
@@ -89,8 +100,9 @@ public class TorneoBuilder {
             throw new IllegalStateException("Error, los límites son invalidos.");
         }
 
-        String idTorneo = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
 
-        return new Torneo(nombre, idTorneo, disciplina, formato, creador, minParticipantes, maxParticipantes);
+        String idTorneo = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+        return new Torneo(nombre, idTorneo, disciplina, formato, creador, minParticipantes, maxParticipantes, fechaInicio, fechaFin);
+
     }
 }

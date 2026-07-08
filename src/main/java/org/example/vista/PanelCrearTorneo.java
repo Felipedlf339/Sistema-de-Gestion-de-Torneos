@@ -1,6 +1,9 @@
 package org.example.vista;
 
 import org.example.modelo.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,13 +20,15 @@ public class PanelCrearTorneo extends JPanel {
     private JButton btnVolver;
     private JTextField txtMinParticipantes;
     private JTextField txtMaxParticipantes;
+    private JTextField txtFechaInicio; // Formato AÑO-MES-DIA.(AAAA-MM-DD)
+    private JTextField txtFechaFin;
 
     public PanelCrearTorneo(VentanaPrincipal ventana, RegistroTorneos registro) {
         // fondo
         setBackground(new Color(43, 43, 43));
         setLayout(new BorderLayout());
 
-        JPanel panelFormulario = new JPanel(new GridLayout(7, 2, 10, 15));
+        JPanel panelFormulario = new JPanel(new GridLayout(9, 2, 10, 15));
         panelFormulario.setBackground(new Color(43, 43, 43));
         panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 150));
 
@@ -75,6 +80,25 @@ public class PanelCrearTorneo extends JPanel {
         txtMaxParticipantes.setCaretColor(Color.WHITE);
         panelFormulario.add(txtMaxParticipantes);
 
+        JLabel lblFechaInicio = new JLabel("Fecha Inicio (YYYY-MM-DD):");
+        lblFechaInicio.setForeground(Color.WHITE);
+        panelFormulario.add(lblFechaInicio);
+
+        txtFechaInicio = new JTextField();
+        txtFechaInicio.setBackground(new Color(69, 73, 74));
+        txtFechaInicio.setForeground(Color.WHITE);
+        panelFormulario.add(txtFechaInicio);
+
+        JLabel lblFechaFin = new JLabel("Fecha Fin (YYYY-MM-DD):");
+        lblFechaFin.setForeground(Color.WHITE);
+        panelFormulario.add(lblFechaFin);
+
+        txtFechaFin = new JTextField();
+        txtFechaFin.setBackground(new Color(69, 73, 74));
+        txtFechaFin.setForeground(Color.WHITE);
+        txtFechaFin.setCaretColor(Color.WHITE);
+        panelFormulario.add(txtFechaFin);
+
         // boton para volver al menu de inicio
         btnVolver = new JButton("Volver al Menú");
         btnVolver.setBackground(new Color(77, 77, 77));
@@ -109,6 +133,15 @@ public class PanelCrearTorneo extends JPanel {
                 int minPart = Integer.parseInt(txtMinParticipantes.getText().trim());
                 int maxPart = Integer.parseInt(txtMaxParticipantes.getText().trim());
 
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate inicio = LocalDate.parse(txtFechaInicio.getText().trim(), formatter);
+                LocalDate fin = LocalDate.parse(txtFechaFin.getText().trim(), formatter);
+
+                if (fin.isBefore(inicio)) {
+                    JOptionPane.showMessageDialog(this, "La fecha de fin no puede ser anterior a la de inicio.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 FormatoTorneo formato;
                 String formatoSeleccionado = (String) cbFormato.getSelectedItem();
                 if (formatoSeleccionado.equals("Liga Simple")) {
@@ -127,6 +160,7 @@ public class PanelCrearTorneo extends JPanel {
                         .conCreador(registro.getUsuarioActual())
                         .conMinParticipantes(minPart)
                         .conMaxParticipantes(maxPart)
+                        .conFechas(inicio, fin)
                         .build();
 
                 boolean guardado = registro.registrarTorneo(nuevoTorneo);
@@ -137,6 +171,8 @@ public class PanelCrearTorneo extends JPanel {
                     txtNombre.setText("");
                     txtMinParticipantes.setText("");
                     txtMaxParticipantes.setText("");
+                    txtFechaInicio.setText("");
+                    txtFechaFin.setText("");
 
                     ventana.mostrarBracket(nuevoTorneo);
                 } else {
@@ -144,6 +180,8 @@ public class PanelCrearTorneo extends JPanel {
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Por favor, ingrese números válidos en los cupos de participantes.", "Error de formato", JOptionPane.ERROR_MESSAGE);
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(this, "Formato de fecha Invalido. Use YYYY-MM-DD", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error al crear", JOptionPane.ERROR_MESSAGE);
             }
