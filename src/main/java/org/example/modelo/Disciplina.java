@@ -1,6 +1,9 @@
 package org.example.modelo;
 
-// Juegos base, guarda los límites de cuánta gente puede jugar dependiendo del deporte o videojuego.
+/**
+ * Enumera las disciplinas que soporta el sistema.
+ * Cada disciplina tiene un valor fijo tanto para el mínimo como el máximo de jugadores.
+ */
 
 public enum Disciplina {
 
@@ -12,16 +15,22 @@ public enum Disciplina {
     VALORANT(5, 6),
     AJEDREZ(1,1),
     TENIS(1,1),
-    BOXEO(1,1),
-    LIBRE(1, Integer.MAX_VALUE);
+    BOXEO(1,1);
 
     private final int minJugadoresPorEquipo;
     private final int maxJugadoresPorEquipo;
 
+    /**
+     * Constructor de Disciplina.
+     * @param minJugadoresPorEquipo el mínimo de jugadores por equipo para participar.
+     * @param maxJugadoresPorEquipo el máximo de jugadores por equipo permitidos.
+     */
     Disciplina(int minJugadoresPorEquipo, int maxJugadoresPorEquipo) {
         this.minJugadoresPorEquipo = minJugadoresPorEquipo;
         this.maxJugadoresPorEquipo = maxJugadoresPorEquipo;
     }
+
+    // Getters
 
     public int getMinJugadoresPorEquipo() {
         return minJugadoresPorEquipo;

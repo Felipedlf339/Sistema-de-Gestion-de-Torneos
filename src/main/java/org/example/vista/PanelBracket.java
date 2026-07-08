@@ -16,6 +16,7 @@ public class PanelBracket extends JPanel implements Observador {
     private final JLabel lblTitulo;
     private final JPanel panelContenido;
     private final JButton btnGenerar;
+    private final JButton btnEliminarTorneo;
 
     private Torneo torneoActual;
     //Evita registrarse mas de una vez como observadores del mismo torneo cada vez que el usuario
@@ -79,6 +80,34 @@ public class PanelBracket extends JPanel implements Observador {
         btnVolver.addActionListener(e -> ventana.cambiarPantalla("MENU_INICIO"));
         panelSur.add(btnVolver);
         add(panelSur, BorderLayout.SOUTH);
+
+
+        //Eliminar el torneo.
+        btnEliminarTorneo = new JButton("Eliminar Torneo");
+        estilizarBoton(btnEliminarTorneo);
+
+        btnEliminarTorneo.addActionListener(e -> {
+            if (torneoActual == null) return;
+            Usuario usuarioActual = registro.getUsuarioActual();
+
+            int confirmacion = JOptionPane.showConfirmDialog(this,
+                    "¿Estás seguro de que deseas eliminar el torneo '" + torneoActual.getNombre() + "'?\nEsta acción borrará a todos los participantes y el progreso.",
+                    "Confirmar Eliminación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                registro.eliminarTorneo(torneoActual.getId(), usuarioActual);
+                JOptionPane.showMessageDialog(this,
+                        "Torneo eliminado con éxito.",
+                        "Torneo Eliminado",
+                        JOptionPane.INFORMATION_MESSAGE);
+                ventana.cambiarPantalla("MENU_INICIO"); // Vuelve al inicio porque el torneo ya no existe.
+            }
+        });
+
+        panelSur.add(btnEliminarTorneo);
+        add(panelSur, BorderLayout.SOUTH);
     }
 
     public void mostrarTorneo(Torneo torneo) {
@@ -105,6 +134,8 @@ public class PanelBracket extends JPanel implements Observador {
         lblTitulo.setText(torneoActual.getNombre() + " - " + torneoActual.getDisciplina()
                     + " -  ID: " + torneoActual.getId());
         btnGenerar.setVisible(esAdmin && torneoActual.getPartidos().isEmpty());
+
+        btnEliminarTorneo.setVisible(esAdmin); // Solo el organizador puede borrar el torneo.
 
         if(!esAdmin) {
             JLabel lblRol = new JLabel("Modo espectador: Solo el administrador puede ingresar los resultados. ");

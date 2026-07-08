@@ -1,6 +1,9 @@
 package org.example.modelo;
 import java.io.Serializable;
 
+/**
+ * Representa a un participante individual.
+ */
 
 public class Jugador implements Participante , Serializable {
     //Datos identificadores del jugador
@@ -23,6 +26,7 @@ public class Jugador implements Participante , Serializable {
     public String getId() {return id;}
     @Override
     public String getNombre() {return nombre;}
+    // Siempre retorna uno debido a que es un solo jugador.
     @Override
     public int cantidadDeMiembros() {return 1;}
     @Override

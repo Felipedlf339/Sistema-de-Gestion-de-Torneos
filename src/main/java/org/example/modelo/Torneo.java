@@ -34,6 +34,10 @@ public class Torneo implements Serializable {
      * @param nombre nombre del torneo, no puede ser null.
      * @param disciplina disciplina del torneo, no puede ser null.
      * @param formatoTorneo formato de juego, no puede ser null.
+     * @param id identificador único asociado al torneo.
+     * @param creador usuario asociado como dueño del torneo.
+     * @param minParticipantes el mínimo de integrantes inscritos para iniciar el torneo.
+     * @param maxParticipantes el máximo de integrantes que pueden inscribirse al torneo.
      */
 
     public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo, Usuario creador, int minParticipantes, int maxParticipantes) {
@@ -52,10 +56,20 @@ public class Torneo implements Serializable {
 
     }
 
+    /**
+     * Verifica si un usuario es el creador del torneo.
+     * @param usuario el usuario que se desea identificar.
+     * @return si el usuario si es el dueño del torneo, false en caso contrario.
+     */
     public boolean esDueño(Usuario usuario) {
         return usuario != null && this.creador.getNombreUsuario().equalsIgnoreCase(usuario.getNombreUsuario());
     }
 
+    /**
+     * Para verificar si una cuenta esta inscrita en un torneo especifico.
+     * @param usuario la cuenta a verificar.
+     * @return true si ya está en la lista de inscripciones.
+     */
     public boolean estaInscrito(Usuario usuario) {
         if (this.cuentasInscritas == null) return false;
 
@@ -70,6 +84,7 @@ public class Torneo implements Serializable {
     /**
      * Inscribe a un participante en el torneo.
      * @param participante participante a inscribir, no puede ser null.
+     * @param usuario la cuenta del usuario que realiza la inscripción.
      */
     public void agregarParticipante(Participante participante, Usuario usuario) {
         if (participante == null) {
@@ -231,6 +246,8 @@ public class Torneo implements Serializable {
             o.actualizar(this);
         }
     }
+
+    // Getters.
     public int getMinParticipantes() {
         return minParticipantes;
     }
@@ -247,11 +264,18 @@ public class Torneo implements Serializable {
     public List<Participante> getParticipantes() {return participantes;}
     public List<Partido> getPartidos() {return partidos;}
 
+    /**
+     * Se ejecuta automáticamente al cargar el torneo desde el archivo datos.dat.
+     * Se utiliza para volver a iniciar observadores, evitando NullPointerExceptions.
+     */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         this.observadores = new ArrayList<>();
     }
 
+    /**
+     * @return representación en texto del torneo.
+     */
     @Override
     public String toString() {
         return this.nombre + " - " + this.disciplina + " (ID: " + this.id + ")";
