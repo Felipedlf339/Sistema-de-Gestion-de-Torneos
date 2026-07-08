@@ -101,6 +101,12 @@ public class VentanaPrincipal extends JFrame {
      * @param args Argumentos de la línea de comandos (no utilizados).
      */
     public static void main(String[] args) {
+
+        UIManager.put("OptionPane.messageForeground", Color.WHITE);
+
+        UIManager.put("OptionPane.background", new Color(43, 43, 43));
+        UIManager.put("Panel.background", new Color(43, 43, 43));
+
         // Intentamos aplicar el estilo visual nativo del sistema operativo
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

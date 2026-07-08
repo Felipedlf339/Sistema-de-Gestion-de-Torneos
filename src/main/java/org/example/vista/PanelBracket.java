@@ -200,21 +200,59 @@ public class PanelBracket extends JPanel implements Observador {
     //Metodo encargado de construir el bracket del torneo actual
     private void construirBracket(boolean esAdmin) {
         List<List<Partido>> rondas = torneoActual.obtenerRondas();
+        int totalRondas = rondas.size();
+
+        //Detectar si hubo Bracket Reset de forma global
+        boolean tieneReset = false;
+        if (torneoActual.getFormatoTorneo() instanceof EliminatoriaDoble) {
+            EliminatoriaDoble doble = (EliminatoriaDoble) torneoActual.getFormatoTorneo();
+            //Solo podemos confirmar un reset si ya estamos en la final y hay al menos 2 rondas jugadas
+            if (doble.isEnGranFinal() && totalRondas >= 2) {
+                Partido pUltimo = rondas.get(totalRondas - 1).get(0);
+                Partido pPenultimo = rondas.get(totalRondas - 2).get(0);
+
+                //Revisar si los participantes del último partido son exactamente los mismos del penúltimo
+                boolean mismoA = pUltimo.getParticipanteA().equals(pPenultimo.getParticipanteA()) || pUltimo.getParticipanteA().equals(pPenultimo.getParticipanteB());
+                boolean mismoB = pUltimo.getParticipanteB().equals(pPenultimo.getParticipanteA()) || pUltimo.getParticipanteB().equals(pPenultimo.getParticipanteB());
+
+                if (mismoA && mismoB) {
+                    tieneReset = true;
+                }
+            }
+        }
+
         int numeroRonda = 1;
         for(List<Partido> ronda : rondas){
-            String etiqueta;
-            if (ronda.size() == 1 && torneoActual.getFormatoTorneo() instanceof EliminatoriaDoble) {
+            //Por defecto, todas las rondas son "Ronda X" para no fijar numero
+            String etiqueta = "Ronda " + numeroRonda;
+
+            if (torneoActual.getFormatoTorneo() instanceof EliminatoriaDoble) {
                 EliminatoriaDoble doble = (EliminatoriaDoble) torneoActual.getFormatoTorneo();
+
+                //Solo si el torneo ya terminó empezamos a cambiar los títulos finales
                 if (doble.isEnGranFinal()) {
-                    etiqueta = "Gran Final";
-                } else {
-                    etiqueta = "Ronda " + numeroRonda;
+                    if (tieneReset) {
+                        //Si hubo revancha, los últimos 3 partidos tienen nombres fijos
+                        if (numeroRonda == totalRondas) etiqueta = "Gran Final (Set 2)";
+                        else if (numeroRonda == totalRondas - 1) etiqueta = "Gran Final (Set 1)";
+                        else if (numeroRonda == totalRondas - 2) etiqueta = "Final de Perdedores";
+                    } else {
+                        //Si el ganador del Winner Bracket ganó a la primera
+                        if (numeroRonda == totalRondas) etiqueta = "Gran Final";
+                        else if (numeroRonda == totalRondas - 1) etiqueta = "Final de Perdedores";
+                    }
                 }
-            } else if (numeroRonda == rondas.size() && ronda.size() == 1) {
-                etiqueta = "Final";
+
             } else {
-                etiqueta = "Ronda " + numeroRonda;
+                //Lógica limpia para Eliminatoria Directa
+                if (numeroRonda == totalRondas && ronda.size() == 1) {
+                    etiqueta = "Final";
+                } else if (numeroRonda == totalRondas - 1 && ronda.size() == 2) {
+                    etiqueta = "Semifinal";
+                }
             }
+
+            // Dibujar en la interfaz
             panelContenido.add(crearSubtitulo(etiqueta));
             for(Partido p : ronda){
                 panelContenido.add(crearFilaPartido(p, esAdmin));
@@ -224,8 +262,9 @@ public class PanelBracket extends JPanel implements Observador {
             numeroRonda++;
         }
 
+        // Mostrar Campeón
         if(torneoActual.getCampeon() != null ){
-            JLabel lblCampeon = new JLabel("Campeon: " + torneoActual.getCampeon().getNombre());
+            JLabel lblCampeon = new JLabel("Campeón: " + torneoActual.getCampeon().getNombre());
             lblCampeon.setForeground(ACENTO);
             lblCampeon.setFont(new Font("Segoe UI", Font.BOLD, 18));
             panelContenido.add(lblCampeon);
