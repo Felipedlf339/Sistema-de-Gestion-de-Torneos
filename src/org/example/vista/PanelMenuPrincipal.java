@@ -1,8 +1,11 @@
-package org.example.modelo;
+package org.example.vista;
+
+import org.example.modelo.RegistroTorneos;
+import org.example.modelo.Torneo;
+import org.example.modelo.Usuario;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 /**
  * Menú principal del sistema.

@@ -1,4 +1,6 @@
-package org.example.modelo;
+package org.example.vista;
+
+import org.example.modelo.*;
 
 import javax.swing.*;
 import java.awt.*;

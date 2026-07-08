@@ -1,4 +1,8 @@
-package org.example.modelo;
+package org.example.vista;
+
+import org.example.modelo.Jugador;
+import org.example.modelo.RegistroTorneos;
+import org.example.modelo.Torneo;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
