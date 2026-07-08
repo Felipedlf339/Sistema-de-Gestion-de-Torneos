@@ -80,7 +80,7 @@ public class Torneo implements Serializable {
             throw new IllegalArgumentException("No se pueden inscribir participantes una vez comenzado el torneo.");
         }
 
-        if (this.cuentasInscritas.contains(usuario)) {
+        if (this.cuentasInscritas.contains(usuario) && !this.esDueño(usuario)) {
             throw new IllegalArgumentException("Error: Tu cuenta de usuario ya registra una inscripción en este torneo.");
         }
 
