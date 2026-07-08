@@ -1,7 +1,8 @@
 package org.example.modelo;
 
 /**
- *
+ * Enumera las disciplinas que soporta el sistema.
+ * Cada disciplina tiene un valor fijo tanto para el mínimo como el máximo de jugadores.
  */
 
 public enum Disciplina {
@@ -19,10 +20,17 @@ public enum Disciplina {
     private final int minJugadoresPorEquipo;
     private final int maxJugadoresPorEquipo;
 
+    /**
+     * Constructor de Disciplina.
+     * @param minJugadoresPorEquipo el mínimo de jugadores por equipo para participar.
+     * @param maxJugadoresPorEquipo el máximo de jugadores por equipo permitidos.
+     */
     Disciplina(int minJugadoresPorEquipo, int maxJugadoresPorEquipo) {
         this.minJugadoresPorEquipo = minJugadoresPorEquipo;
         this.maxJugadoresPorEquipo = maxJugadoresPorEquipo;
     }
+
+    // Getters
 
     public int getMinJugadoresPorEquipo() {
         return minJugadoresPorEquipo;

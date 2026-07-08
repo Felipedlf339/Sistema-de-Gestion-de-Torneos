@@ -1,7 +1,10 @@
 package org.example.modelo;
 import java.io.Serializable;
 
-// Cuantos puntos se hicieron y quien es el ganador del match.
+
+/**
+ * El resultado de un partido ya finalizado, puntaje y ganador.
+ */
 public class Resultado implements Serializable {
 
     private int puntajeParticipanteA;
@@ -12,6 +15,7 @@ public class Resultado implements Serializable {
         this.puntajeParticipanteB = puntajeParticipanteB;
     }
 
+    // Getters
     public int getPuntajeParticipanteA() {
         return puntajeParticipanteA;
     }
@@ -20,6 +24,9 @@ public class Resultado implements Serializable {
         return puntajeParticipanteB;
     }
 
+    /**
+     * @return True si el participante A fue el ganador por puntos.
+     */
     public boolean ganoParticipanteA() {
         return puntajeParticipanteA > puntajeParticipanteB;
     }
