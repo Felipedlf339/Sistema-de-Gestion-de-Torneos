@@ -5,6 +5,7 @@ import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.time.LocalDate;
 
 /**
  * Clase principal
@@ -29,6 +30,11 @@ public class Torneo implements Serializable {
     private List<Integer> rondaLimites;
     private Participante campeon;
 
+    //Atributos de las fechas
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
+    private EstadoTorneo estado;
+
     /**
      * Constructor del torneo
      * @param nombre nombre del torneo, no puede ser null.
@@ -40,7 +46,8 @@ public class Torneo implements Serializable {
      * @param maxParticipantes el máximo de integrantes que pueden inscribirse al torneo.
      */
 
-    public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo, Usuario creador, int minParticipantes, int maxParticipantes) {
+    public Torneo(String nombre, String id, Disciplina disciplina,  FormatoTorneo formatoTorneo, Usuario creador, int minParticipantes, int maxParticipantes,
+                  LocalDate fechaInicio, LocalDate fechaFin) {
         this.nombre = nombre;
         this.id = id;
         this.disciplina = disciplina;
@@ -53,6 +60,9 @@ public class Torneo implements Serializable {
         this.observadores = new ArrayList<>();
         this.rondaLimites = new ArrayList<>();
         this.cuentasInscritas = new ArrayList<>();
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.estado = EstadoTorneo.INSCRIPCION;
 
     }
 
@@ -132,6 +142,7 @@ public class Torneo implements Serializable {
         partidos = formatoTorneo.generarEnfrentamientos(participantes);
         rondaLimites.clear();
         rondaLimites.add(partidos.size());
+        this.estado = EstadoTorneo.EN_CURSO;
         notificarObservadores();
     }
 
@@ -155,6 +166,7 @@ public class Torneo implements Serializable {
         } else if (formatoTorneo instanceof EliminatoriaDoble) {
             avanzarEliminatoriaDoble();
         }
+        this.estado = EstadoTorneo.FINALIZADO;
     }
 
     private void avanzarEliminatoriaDirecta() {
@@ -263,6 +275,9 @@ public class Torneo implements Serializable {
     public Usuario getCreador() { return creador; }
     public List<Participante> getParticipantes() {return participantes;}
     public List<Partido> getPartidos() {return partidos;}
+    public EstadoTorneo getEstado() { return estado; }
+    public LocalDate getFechaInicio() { return fechaInicio; }
+    public LocalDate getFechaFin() { return fechaFin; }
 
     /**
      * Se ejecuta automáticamente al cargar el torneo desde el archivo datos.dat.

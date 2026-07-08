@@ -1,5 +1,7 @@
 package org.example.modelo;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Representa un enfrentamiento entre dos participantes.
@@ -10,6 +12,7 @@ public class Partido implements Serializable {
     private Participante participanteA;
     private Participante participanteB;
     private Resultado resultado;
+    private LocalDateTime fechaHora;
 
     /**
      * Constructor de Partido.
@@ -19,6 +22,7 @@ public class Partido implements Serializable {
     public Partido(Participante participanteA, Participante participanteB) {
         this.participanteA = participanteA;
         this.participanteB = participanteB;
+        this.fechaHora = null;
     }
 
     /**
@@ -27,6 +31,21 @@ public class Partido implements Serializable {
      */
     public void registrarResultado(Resultado resultado) {
         this.resultado = resultado;
+    }
+
+
+    public void programarFecha(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
+    }
+
+    public String getFechaFormateada() {
+        if (fechaHora == null) return "Sin programar";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        return fechaHora.format(formatter);
     }
 
     // Getters.

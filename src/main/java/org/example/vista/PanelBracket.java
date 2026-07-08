@@ -4,6 +4,8 @@ import org.example.modelo.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -131,8 +133,7 @@ public class PanelBracket extends JPanel implements Observador {
 
         boolean esAdmin = torneoActual.esDueño(registro.getUsuarioActual());
 
-        lblTitulo.setText(torneoActual.getNombre() + " - " + torneoActual.getDisciplina()
-                    + " -  ID: " + torneoActual.getId());
+        lblTitulo.setText(torneoActual.getNombre() + " (" + torneoActual.getEstado() + ") - ID: " + torneoActual.getId());
         btnGenerar.setVisible(esAdmin && torneoActual.getPartidos().isEmpty());
 
         btnEliminarTorneo.setVisible(esAdmin); // Solo el organizador puede borrar el torneo.
@@ -286,17 +287,27 @@ public class PanelBracket extends JPanel implements Observador {
         if (resultado != null) {
             texto = nombreA + "   " + resultado.getPuntajeParticipanteA() + " - " + resultado.getPuntajeParticipanteB() + "   " + nombreB;
         } else {
-            texto = nombreA + "   vs   " + nombreB;
+            texto = nombreA + "   vs   " + nombreB + " | " + partido.getFechaFormateada();
         }
         JLabel lblPartido = new JLabel(texto);
         lblPartido.setForeground(Color.WHITE);
         fila.add(lblPartido, BorderLayout.CENTER);
-
         if(resultado == null && esAdmin){
-            JButton btnResultado = new JButton("Ingresar Resultado");
+            JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+            panelBotones.setBackground(TARJETA);
+
+            JButton btnFecha = new JButton("Programar");
+            estilizarBoton(btnFecha);
+            btnFecha.addActionListener(e -> abrirDialogoFecha(partido));
+
+            JButton btnResultado = new JButton("Resultado");
             estilizarBoton(btnResultado);
             btnResultado.addActionListener(e -> abrirDialogoResultado(partido, nombreA, nombreB));
-            fila.add(btnResultado, BorderLayout.EAST);
+
+            panelBotones.add(btnFecha);
+            panelBotones.add(btnResultado);
+
+            fila.add(panelBotones, BorderLayout.EAST);
         } else if(resultado != null){
             String textoGanador;
             if (resultado.ganoParticipanteA()) {
@@ -309,6 +320,23 @@ public class PanelBracket extends JPanel implements Observador {
             fila.add(lblGanador, BorderLayout.EAST);
         }
         return fila;
+    }
+
+    private void abrirDialogoFecha(Partido partido) {
+        JTextField txtFecha = new JTextField("DD/MM/YYYY HH:MM");
+        Object[] message = { "Ingrese fecha y hora del encuentro:", txtFecha };
+
+        int option = JOptionPane.showConfirmDialog(this, message, "Programar Partido", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                LocalDateTime fecha = LocalDateTime.parse(txtFecha.getText(), formatter);
+                partido.programarFecha(fecha);
+                actualizar(torneoActual); // Refresca la vista automáticamente para mostrar la fecha nueva
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Formato incorrecto. Use DD/MM/YYYY HH:MM (Ejemplo: 20/07/2026 15:30)", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private void abrirDialogoResultado(Partido partido, String nombreA, String nombreB){
