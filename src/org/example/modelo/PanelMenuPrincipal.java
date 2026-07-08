@@ -45,7 +45,7 @@ public class PanelMenuPrincipal extends JPanel {
         add(btnCrear, gbc);
 
         // boton de unirse a evento
-        JButton btnUnirse = new JButton("Unirse a un Evento");
+        JButton btnUnirse = new JButton("Inscripción a Torneos");
         btnUnirse.setFont(btnFont);
         btnUnirse.setBackground(new Color(77, 77, 77));
         btnUnirse.setForeground(Color.WHITE);
