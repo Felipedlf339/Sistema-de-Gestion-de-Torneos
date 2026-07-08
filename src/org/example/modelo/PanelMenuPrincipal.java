@@ -2,6 +2,7 @@ package org.example.modelo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 /**
  * Menú principal del sistema.
@@ -69,13 +70,49 @@ public class PanelMenuPrincipal extends JPanel {
         add(btnVerTorneo, gbc);
 
         btnVerTorneo.addActionListener(e -> {
-            String codigo = JOptionPane.showInputDialog(this, "Ingrese el ID del torneo:", "Ver Torneo", JOptionPane.QUESTION_MESSAGE);
-            if (codigo == null || codigo.isBlank()) return;
-            Torneo torneo = registro.buscarTorneoPorInvitacion(codigo.trim());
-            if (torneo != null) {
-                ventana.mostrarBracket(torneo);
-            } else {
-                JOptionPane.showMessageDialog(this, "No se encontró ningún torneo con ese ID.", "Atención", JOptionPane.WARNING_MESSAGE);
+            Usuario usuarioActual = registro.getUsuarioActual();
+            java.util.List<Torneo> misTorneos = registro.obtenerMisTorneos(usuarioActual);
+
+            if (misTorneos.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Aún no has creado ni te has inscrito en ningún torneo.", "Mis Torneos", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            UIManager.put("OptionPane.background", new Color(43, 43, 43));
+            UIManager.put("Panel.background", new Color(43, 43, 43));
+
+
+            JComboBox<Torneo> comboTorneos = new JComboBox<>(misTorneos.toArray(new Torneo[0]));
+            comboTorneos.setBackground(Color.WHITE);
+            comboTorneos.setForeground(Color.BLACK);
+
+
+            JPanel panelOscuro = new JPanel(new BorderLayout(0, 10));
+            panelOscuro.setBackground(new Color(43, 43, 43));
+
+            JLabel lblMensaje = new JLabel("Seleccione su torneo:");
+            lblMensaje.setForeground(Color.WHITE);
+
+            panelOscuro.add(lblMensaje, BorderLayout.NORTH);
+            panelOscuro.add(comboTorneos, BorderLayout.CENTER);
+
+            int opcion = JOptionPane.showOptionDialog(
+                    this,
+                    panelOscuro,
+                    "Mis Torneos",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    new String[]{"Ver Torneo", "Cancelar"},
+                    "Ver Torneo"
+            );
+
+
+            if (opcion == JOptionPane.OK_OPTION) {
+                Torneo seleccionado = (Torneo) comboTorneos.getSelectedItem();
+                if (seleccionado != null) {
+                    ventana.mostrarBracket(seleccionado);
+                }
             }
         });
 

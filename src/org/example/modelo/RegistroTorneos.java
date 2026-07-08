@@ -63,13 +63,11 @@ public class RegistroTorneos {
         return Collections.unmodifiableList(new ArrayList<>(listaTorneos));
     }
 
-    public List<Torneo> obtenerMisTorneosCreados() {
+    public List<Torneo> obtenerMisTorneos(Usuario usuarioActual) {
         List<Torneo> misTorneos = new ArrayList<>();
-        if (usuarioActual == null) {
-            return misTorneos;
-        }
-        for (Torneo t : listaTorneos) {
-            if (t.esDueño(usuarioActual)) {
+
+        for (Torneo t : this.listaTorneos) {
+            if (t.esDueño(usuarioActual) || t.estaInscrito(usuarioActual)) {
                 misTorneos.add(t);
             }
         }

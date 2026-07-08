@@ -56,6 +56,17 @@ public class Torneo implements Serializable {
         return usuario != null && this.creador.getNombreUsuario().equalsIgnoreCase(usuario.getNombreUsuario());
     }
 
+    public boolean estaInscrito(Usuario usuario) {
+        if (this.cuentasInscritas == null) return false;
+
+        for (Usuario u : this.cuentasInscritas) {
+            if (u.getNombreUsuario().equalsIgnoreCase(usuario.getNombreUsuario())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Inscribe a un participante en el torneo.
      * @param participante participante a inscribir, no puede ser null.
