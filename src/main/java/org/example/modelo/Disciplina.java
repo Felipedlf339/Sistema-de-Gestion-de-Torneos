@@ -1,6 +1,8 @@
 package org.example.modelo;
 
-// Juegos base, guarda los límites de cuánta gente puede jugar dependiendo del deporte o videojuego.
+/**
+ *
+ */
 
 public enum Disciplina {
 
@@ -12,8 +14,7 @@ public enum Disciplina {
     VALORANT(5, 6),
     AJEDREZ(1,1),
     TENIS(1,1),
-    BOXEO(1,1),
-    LIBRE(1, Integer.MAX_VALUE);
+    BOXEO(1,1);
 
     private final int minJugadoresPorEquipo;
     private final int maxJugadoresPorEquipo;
