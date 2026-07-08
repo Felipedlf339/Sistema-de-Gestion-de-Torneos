@@ -1,15 +1,15 @@
 package org.example.vista;
 
-import org.example.modelo.Jugador;
-import org.example.modelo.RegistroTorneos;
-import org.example.modelo.Torneo;
-
+import org.example.modelo.*;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Pantalla que permite a un usuario buscar un torneo existente mediante su ID e inscribirse como participante.
+ * Dependiendo de la disciplina se inscribe un equipo o un solo jugador.
  */
 public class PanelUnirseEvento extends JPanel {
     private JTextField txtIdTorneo;
@@ -21,6 +21,16 @@ public class PanelUnirseEvento extends JPanel {
 
     // Guardamos temporalmente el torneo encontrado
     private Torneo torneoEncontrado;
+
+    // Campos globales de interfaz para la gestión dinámica de equipos y contactos
+    private JLabel lblNombre;
+    private JLabel lblIntegrantes;
+    private JTextArea txtIntegrantes;
+    private JScrollPane scrollIntegrantes;
+
+    private JLabel lblContactos;
+    private JTextArea txtContactos;
+    private JScrollPane scrollContactos;
 
     /**
      * Constructor del panel de búsqueda e inscripción.
@@ -53,7 +63,7 @@ public class PanelUnirseEvento extends JPanel {
         txtIdTorneo.setCaretColor(Color.WHITE);
         panelBusqueda.add(txtIdTorneo);
 
-        // boton para buscar un torneo con ese id
+        // Botón para buscar un torneo con ese id
         btnBuscar = new JButton("Buscar Torneo");
         btnBuscar.setBackground(btnGray);
         btnBuscar.setForeground(Color.WHITE);
@@ -80,7 +90,7 @@ public class PanelUnirseEvento extends JPanel {
 
         gbc.gridwidth = 1;
         gbc.gridy = 1;
-        JLabel lblNombre = new JLabel("Nombre del Jugador/Equipo:");
+        lblNombre = new JLabel("Nombre del Jugador/Equipo:");
         lblNombre.setForeground(Color.WHITE);
         lblNombre.setFont(labelFont);
         panelInscripcion.add(lblNombre, gbc);
@@ -94,7 +104,47 @@ public class PanelUnirseEvento extends JPanel {
         gbc.gridx = 1;
         panelInscripcion.add(txtNombreJugador, gbc);
 
-        // boton para inscribirse en el torneo seleccionado
+        // Zona para ingresar los integrantes en caso de ser una disciplina por equipos
+        lblIntegrantes = new JLabel("Integrantes (separados por saltos de línea):");
+        lblIntegrantes.setForeground(Color.WHITE);
+        lblIntegrantes.setFont(labelFont);
+        lblIntegrantes.setVisible(false);
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 1;
+        panelInscripcion.add(lblIntegrantes, gbc);
+
+        txtIntegrantes = new JTextArea(3, 15);
+        txtIntegrantes.setFont(fieldFont);
+        txtIntegrantes.setBackground(darkGray);
+        txtIntegrantes.setForeground(Color.WHITE);
+        txtIntegrantes.setCaretColor(Color.WHITE);
+        txtIntegrantes.setLineWrap(true);
+        txtIntegrantes.setToolTipText("Cada contacto va ligado al jugador mediante la posición, por lo tanto, se debe respetar el orden para registrar cada jugador junto a su contacto correspondiente");
+        scrollIntegrantes = new JScrollPane(txtIntegrantes);
+        scrollIntegrantes.setVisible(false);
+        gbc.gridx = 1;
+        panelInscripcion.add(scrollIntegrantes, gbc);
+
+        // Zona para ingresar la información de contacto de los participantes
+        lblContactos = new JLabel("Contacto(s):");
+        lblContactos.setForeground(Color.WHITE);
+        lblContactos.setFont(labelFont);
+        lblContactos.setVisible(false);
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 1;
+        panelInscripcion.add(lblContactos, gbc);
+
+        txtContactos = new JTextArea(2, 15);
+        txtContactos.setFont(fieldFont);
+        txtContactos.setBackground(darkGray);
+        txtContactos.setForeground(Color.WHITE);
+        txtContactos.setCaretColor(Color.WHITE);
+        txtContactos.setLineWrap(true);
+        txtContactos.setToolTipText("Si un integrante no tiene contacto, escriba 'Sin contacto'");
+        scrollContactos = new JScrollPane(txtContactos);
+        scrollContactos.setVisible(false);
+        gbc.gridx = 1;
+        panelInscripcion.add(scrollContactos, gbc);
+
+        // Botón para inscribirse en el torneo seleccionado
         btnInscribirse = new JButton("Inscribirse al Torneo");
         btnInscribirse.setBackground(btnGray);
         btnInscribirse.setForeground(Color.WHITE);
@@ -102,7 +152,7 @@ public class PanelUnirseEvento extends JPanel {
         btnInscribirse.setContentAreaFilled(false);
         btnInscribirse.setOpaque(true);
         btnInscribirse.setEnabled(false);
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
         panelInscripcion.add(btnInscribirse, gbc);
 
         // Parte Inferior
@@ -120,8 +170,8 @@ public class PanelUnirseEvento extends JPanel {
         btnVolver.setOpaque(true);
         panelInferior.add(btnVolver);
 
-        // se unen las partes}
-        panelInscripcion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
+        // se unen las partes
+        panelInscripcion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 350));
         add(panelBusqueda, BorderLayout.NORTH);
         add(panelInscripcion, BorderLayout.CENTER);
         add(panelInferior, BorderLayout.SOUTH);
@@ -139,8 +189,28 @@ public class PanelUnirseEvento extends JPanel {
 
             if (torneoEncontrado != null) {
                 lblEstadoTorneo.setText("Torneo encontrado: " + torneoEncontrado.getNombre());
-                lblEstadoTorneo.setForeground(new Color(249, 190, 17));
+                lblEstadoTorneo.setForeground(new Color(249, 140, 17));
+
+                boolean esEquipo = torneoEncontrado.getDisciplina().getMaxJugadoresPorEquipo() > 1;
+
                 txtNombreJugador.setEnabled(true);
+                txtNombreJugador.setText("");
+
+                if (esEquipo) {
+                    lblNombre.setText("Nombre del Equipo:");
+                    lblIntegrantes.setVisible(true);
+                    scrollIntegrantes.setVisible(true);
+                    lblContactos.setText("Contactos (separados por salto de línea):");
+                } else {
+                    lblNombre.setText("Nombre del Jugador:");
+                    lblIntegrantes.setVisible(false);
+                    scrollIntegrantes.setVisible(false);
+                    lblContactos.setText("Dato de Contacto:");
+                }
+
+                lblContactos.setVisible(true);
+                scrollContactos.setVisible(true);
+
                 btnInscribirse.setEnabled(true);
                 txtIdTorneo.setEnabled(false);
                 btnBuscar.setEnabled(false);
@@ -151,32 +221,95 @@ public class PanelUnirseEvento extends JPanel {
                 btnInscribirse.setEnabled(false);
             }
         });
+
         // Logica para inscribirse en el evento seleccionado
         btnInscribirse.addActionListener(e -> {
             String nombreJugador = txtNombreJugador.getText().trim();
             if (nombreJugador.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debe ingresar su nombre.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Debe ingresar el nombre.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             try {
-                String idGenerado = "JUG-" + System.currentTimeMillis();
-                Jugador nuevoJugador = new Jugador(idGenerado, nombreJugador, "Sin contacto");
-                torneoEncontrado.agregarParticipante(nuevoJugador, registro.getUsuarioActual());
+                // Instanciación del participante, sea Jugador o Equipo, extrayendo los datos de los cuadros de texto
+                boolean esEquipo = torneoEncontrado.getDisciplina().getMaxJugadoresPorEquipo() > 1;
+                String idGenerado = (esEquipo ? "EQ-" : "JUG-") + System.currentTimeMillis();
+
+                String textoContactos = txtContactos.getText().trim();
+                if (textoContactos.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Debe ingresar la información de contacto.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if (esEquipo) {
+                    String textoIntegrantes = txtIntegrantes.getText().trim();
+                    if (textoIntegrantes.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Debe ingresar los integrantes del equipo.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Se separa el texto ingresado en integrantes y en contactos para guardar cada jugador y contacto en formato de lista
+                    List<Jugador> listaIntegrantes = new ArrayList<>();
+                    String[] nombresSeparados = textoIntegrantes.split("\n");
+                    String[] contactosSeparados = textoContactos.split("\n");
+
+                    if (nombresSeparados.length != contactosSeparados.length) {
+                        JOptionPane.showMessageDialog(this, "Debe haber la misma cantidad de contactos que de integrantes.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    for (int i = 0; i < nombresSeparados.length; i++) {
+                        String nombreMiembro = nombresSeparados[i].trim();
+                        String contactoMiembro = contactosSeparados[i].trim();
+
+                        if (nombreMiembro.isEmpty() || contactoMiembro.isEmpty()) {
+                            JOptionPane.showMessageDialog(this, "No puedes dejar nombres o contactos en blanco.", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        String idUnicoMiembro = "JUG-" + System.currentTimeMillis() + "-" + i;
+                        listaIntegrantes.add(new Jugador(idUnicoMiembro, nombreMiembro, contactoMiembro));
+                    }
+
+                    Equipo nuevoEquipo = new Equipo(idGenerado, nombreJugador, listaIntegrantes);
+                    torneoEncontrado.agregarParticipante(nuevoEquipo, registro.getUsuarioActual());
+                } else {
+
+                    String[] contactosSeparados = textoContactos.split("\n");
+
+                    // Nos aseguramos de que haya un solo dato de contacto
+                    if (contactosSeparados.length > 1) {
+                        JOptionPane.showMessageDialog(this, "Al ser una disciplina individual, solo debes ingresar un dato de contacto.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    Jugador nuevoJugador = new Jugador(idGenerado, nombreJugador, textoContactos);
+                    torneoEncontrado.agregarParticipante(nuevoJugador, registro.getUsuarioActual());
+                }
 
                 JOptionPane.showMessageDialog(this,
                         "¡Inscripción exitosa en '" + torneoEncontrado.getNombre() + "'!",
                         "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
                 Torneo torneoInscrito = torneoEncontrado;
-                limpiarCampos();
-                ventana.mostrarBracket(torneoInscrito);
+
+                // Se reestablece la interfaz para el Administrador o se redirección hacia el bracket para el usuario normal
+                Usuario usuarioActual = registro.getUsuarioActual();
+                if (torneoEncontrado.esDueño(usuarioActual)) {
+                    txtNombreJugador.setText("");
+                    if (txtIntegrantes != null) txtIntegrantes.setText("");
+                    if (txtContactos != null) txtContactos.setText("");
+                } else {
+                    limpiarCampos();
+                    ventana.mostrarBracket(torneoInscrito);
+                }
 
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Inscripción Fallida", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
+
     // este método borra y limpia los espacios
     private void limpiarCampos() {
         txtIdTorneo.setText("");
@@ -186,6 +319,17 @@ public class PanelUnirseEvento extends JPanel {
         txtNombreJugador.setText("");
         txtNombreJugador.setEnabled(false);
         btnInscribirse.setEnabled(false);
+
+        // no solo se limpian, tambien se ocultan los cuadros de texto dinámicos
+        if (txtIntegrantes != null) txtIntegrantes.setText("");
+        if (lblIntegrantes != null) lblIntegrantes.setVisible(false);
+        if (scrollIntegrantes != null) scrollIntegrantes.setVisible(false);
+
+        if (txtContactos != null) txtContactos.setText("");
+        if (lblContactos != null) lblContactos.setVisible(false);
+        if (scrollContactos != null) scrollContactos.setVisible(false);
+
+        if (lblNombre != null) lblNombre.setText("Nombre del Jugador/Equipo:");
 
         lblEstadoTorneo.setText("");
         lblEstadoTorneo.setForeground(Color.LIGHT_GRAY);
