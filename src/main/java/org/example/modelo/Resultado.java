@@ -30,4 +30,12 @@ public class Resultado implements Serializable {
     public boolean ganoParticipanteA() {
         return puntajeParticipanteA > puntajeParticipanteB;
     }
+
+    /**
+     * @return True si el partido terminó empatado.
+     */
+    public boolean esEmpate() {
+        return puntajeParticipanteA == puntajeParticipanteB;
+    }
 }
+

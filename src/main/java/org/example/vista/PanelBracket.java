@@ -345,13 +345,15 @@ public class PanelBracket extends JPanel implements Observador {
 
             fila.add(panelBotones, BorderLayout.EAST);
         } else if(resultado != null){
-            String textoGanador;
-            if (resultado.ganoParticipanteA()) {
-                textoGanador = "Gana " + nombreA;
-            } else {
-                textoGanador = "Gana " + nombreB;
-            }
-            JLabel lblGanador = new JLabel(textoGanador);
+        String textoGanador;
+        if (resultado.esEmpate()) {
+            textoGanador = "Empate";
+        } else if (resultado.ganoParticipanteA()) {
+            textoGanador = "Gana " + nombreA;
+        } else {
+            textoGanador = "Gana " + nombreB;
+        }
+        JLabel lblGanador = new JLabel(textoGanador);
             lblGanador.setForeground(ACENTO);
             fila.add(lblGanador, BorderLayout.EAST);
         }
@@ -368,13 +370,19 @@ public class PanelBracket extends JPanel implements Observador {
 
         int option = JOptionPane.showConfirmDialog(this, message, "Programar Partido", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
+            LocalDateTime fecha;
             try {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                LocalDateTime fecha = LocalDateTime.parse(txtFecha.getText(), formatter);
-                partido.programarFecha(fecha);
-                actualizar(torneoActual); // Refresca la vista automáticamente para mostrar la fecha nueva
+                fecha = LocalDateTime.parse(txtFecha.getText(), formatter);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Formato incorrecto. Use DD/MM/YYYY HH:MM (Ejemplo: 20/07/2026 15:30)", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                torneoActual.programarPartido(partido, fecha);
+                actualizar(torneoActual); // Refresca la vista automáticamente para mostrar la fecha nueva
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Fecha inválida", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

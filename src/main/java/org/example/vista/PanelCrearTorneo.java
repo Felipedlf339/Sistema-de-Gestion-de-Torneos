@@ -137,6 +137,11 @@ public class PanelCrearTorneo extends JPanel {
                 LocalDate inicio = LocalDate.parse(txtFechaInicio.getText().trim(), formatter);
                 LocalDate fin = LocalDate.parse(txtFechaFin.getText().trim(), formatter);
 
+                if (inicio.isBefore(LocalDate.now())) {
+                    JOptionPane.showMessageDialog(this, "La fecha de inicio no puede ser anterior a hoy.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 if (fin.isBefore(inicio)) {
                     JOptionPane.showMessageDialog(this, "La fecha de fin no puede ser anterior a la de inicio.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;

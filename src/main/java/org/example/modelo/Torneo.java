@@ -169,7 +169,17 @@ public class Torneo implements Serializable {
      * 3. Al finalizar la evaluación de avance, actualiza el estado del torneo
      * a {@link EstadoTorneo#FINALIZADO}.
      */
+
     private void avanzarRondaSiCorresponde() {
+        if (formatoTorneo instanceof LigaSimple) {
+            boolean todosConResultado = !partidos.isEmpty() &&
+                    partidos.stream().allMatch(p -> p.getResultado() != null);
+            if (todosConResultado) {
+                this.estado = EstadoTorneo.FINALIZADO;
+            }
+            return;
+        }
+
         if (rondaLimites.isEmpty()) return;
 
         if (formatoTorneo instanceof EliminatoriaDirecta) {
@@ -177,7 +187,6 @@ public class Torneo implements Serializable {
         } else if (formatoTorneo instanceof EliminatoriaDoble) {
             avanzarEliminatoriaDoble();
         }
-        this.estado = EstadoTorneo.FINALIZADO;
     }
 
     /**
@@ -215,6 +224,7 @@ public class Torneo implements Serializable {
 
         if (ganadores.size() <= 1) {
             this.campeon = ganadores.isEmpty() ? null : ganadores.get(0);
+            this.estado = EstadoTorneo.FINALIZADO;
             return;
         }
 
@@ -244,12 +254,41 @@ public class Torneo implements Serializable {
 
         if (siguientes.isEmpty()) {
             this.campeon = doble.getWinnerBracket().isEmpty() ? null : doble.getWinnerBracket().get(0);
+            this.estado = EstadoTorneo.FINALIZADO;
             return;
         }
 
         partidos.addAll(siguientes);
         rondaLimites.add(partidos.size());
     }
+
+    /**
+     * Programa (o reprograma) la fecha y hora de un partido, validando que:
+     * No sea en el pasado.
+     * Que este dentro del rango [fechaInicio, fechaFin] del torneo.
+     */
+    public void programarPartido(Partido partido, java.time.LocalDateTime fechaHora) {
+        if (partido == null || fechaHora == null) {
+            throw new IllegalArgumentException("Datos incompletos para programar el partido.");
+        }
+
+        if (fechaHora.isBefore(java.time.LocalDateTime.now())) {
+            throw new IllegalArgumentException("No se puede programar un partido en una fecha/hora pasada.");
+        }
+
+        if (fechaInicio != null && fechaHora.toLocalDate().isBefore(fechaInicio)) {
+            throw new IllegalArgumentException(
+                    "El partido no puede programarse antes de la fecha de inicio del torneo (" + fechaInicio + ").");
+        }
+
+        if (fechaFin != null && fechaHora.toLocalDate().isAfter(fechaFin)) {
+            throw new IllegalArgumentException(
+                    "El partido no puede programarse después de la fecha de fin del torneo (" + fechaFin + ").");
+        }
+        partido.programarFecha(fechaHora);
+        notificarObservadores();
+    }
+
     /**
      * Agrupa los partidos por ronda
      * @return lista de rondas, cada una con su lista de partidos en orden cronológico.

@@ -100,6 +100,14 @@ public class TorneoBuilder {
             throw new IllegalStateException("Error, los límites son invalidos.");
         }
 
+        if (fechaInicio.isBefore(LocalDate.now())) {
+            throw new IllegalStateException("Error, la fecha de inicio no puede ser anterior a hoy.");
+        }
+
+        if (fechaFin.isBefore(fechaInicio)) {
+            throw new IllegalStateException("Error, la fecha de fin no puede ser anterior a la de inicio.");
+        }
+
 
         String idTorneo = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
         return new Torneo(nombre, idTorneo, disciplina, formato, creador, minParticipantes, maxParticipantes, fechaInicio, fechaFin);
