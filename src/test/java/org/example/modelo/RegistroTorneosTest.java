@@ -2,7 +2,7 @@ package org.example.modelo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +46,8 @@ public class RegistroTorneosTest {
 
 
     private Torneo crearTorneoDePrueba(String id, Usuario creador) {
-        return new Torneo("Torneo", id, Disciplina.AJEDREZ, new LigaSimple(), creador, 2, 4);
+        return new Torneo("Torneo", id, Disciplina.AJEDREZ, new LigaSimple(), creador, 2, 4,
+                LocalDate.now(), LocalDate.now().plusDays(7));
     }
 
     @Test

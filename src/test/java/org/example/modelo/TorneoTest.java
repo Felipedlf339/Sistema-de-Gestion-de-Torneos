@@ -3,6 +3,7 @@ package org.example.modelo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +21,8 @@ public class TorneoTest {
         // Inicializamos los datos antes de cada prueba para tener todo fresquito
         creador = new Usuario("Admin_Torneos");
         copaEstrella = new Torneo("Copa Estrella", "160407", Disciplina.TENIS,
-                new LigaSimple(), creador, 2, 4);
+                new LigaSimple(), creador, 2, 4,
+                LocalDate.now(), LocalDate.now().plusDays(7));
 
 
         javiera = new Jugador("1604JV", "Javiera", "javi@mail.com");
@@ -79,7 +81,8 @@ public class TorneoTest {
     @Test
     void agregarParticipante_lanzaExcepcion_siSeAlcanzaElMaximoDeCupos() {
         Torneo copaChampiñon = new Torneo("Copa Champiñón", "160407", Disciplina.AJEDREZ,
-                new LigaSimple(), creador, 1, 1);
+                new LigaSimple(), creador, 1, 1,
+                LocalDate.now(), LocalDate.now().plusDays(7));
         copaChampiñon.agregarParticipante(javiera, cuentaJavi);
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -103,7 +106,8 @@ public class TorneoTest {
     void agregarParticipante_lanzaExcepcion_siEquipoSuperaMaximoDeDisciplina() {
 
         Torneo copaFlor = new Torneo("Copa Flor", "1604JV", Disciplina.LEAGUE_OF_LEGENDS,
-                new LigaSimple(), creador, 2, 8);
+                new LigaSimple(), creador, 2, 8,
+                LocalDate.now(), LocalDate.now().plusDays(7));
 
 
         List<Jugador> muchosJugadores = List.of(
@@ -152,7 +156,8 @@ public class TorneoTest {
     void eliminatoriaDirecta_declaraCampeon_alFinalizarTodasLasRondas() {
 
         Torneo copaGolf = new Torneo("Copa Golf", "160407", Disciplina.AJEDREZ,
-                new EliminatoriaDirecta(), creador, 2, 4);
+                new EliminatoriaDirecta(), creador, 2, 4,
+                LocalDate.now(), LocalDate.now().plusDays(7));
 
         Jugador jugadorX = new Jugador("X", "Extra", "");
 
@@ -184,7 +189,8 @@ public class TorneoTest {
     void obtenerRondas_agrupaLosPartidosCorrectamente() {
 
         Torneo copaRapida = new Torneo("Copa DOO", "1604JV", Disciplina.AJEDREZ,
-                new EliminatoriaDirecta(), creador, 2, 4);
+                new EliminatoriaDirecta(), creador, 2, 4,
+                LocalDate.now(), LocalDate.now().plusDays(7));
 
         copaRapida.agregarParticipante(javiera, cuentaJavi);
         copaRapida.agregarParticipante(martin, cuentaMartin);

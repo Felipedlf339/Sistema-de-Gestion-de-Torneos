@@ -2,6 +2,7 @@ package org.example.modelo;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDate;
 
 public class TorneoBuilderTest {
 
@@ -12,7 +13,8 @@ public class TorneoBuilderTest {
                 .conFormato(new LigaSimple())
                 .conCreador(new Usuario("admin"))
                 .conMinParticipantes(2)
-                .conMaxParticipantes(8);
+                .conMaxParticipantes(8)
+                .conFechas(LocalDate.now(), LocalDate.now().plusDays(7));
     }
 
     @Test
