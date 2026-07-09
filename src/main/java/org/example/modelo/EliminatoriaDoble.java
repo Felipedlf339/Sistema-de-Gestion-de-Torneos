@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 
+/**
+ * Implementación del formato de competencia de Eliminatoria Doble
+ * En este formato, un participante debe perder dos veces para ser eliminado definitivamente.
+ * El sistema mantiene dos cuadros de competencia:
+ * Winner Bracket: Participantes que no han perdido.
+ * Loser Bracket: Participantes que han perdido una vez.
+ * El torneo termina en una Gran Final entre el ganador del Winner Bracket y el ganador del Loser Bracket.
+ */
+
 public class EliminatoriaDoble implements FormatoTorneo, Serializable {
 
     private List<Participante> winnerBracket = new ArrayList<>();
@@ -16,6 +25,11 @@ public class EliminatoriaDoble implements FormatoTorneo, Serializable {
     private boolean enGranFinal = false;
     private boolean granFinalJugada = false;
 
+    /**
+     * Inicializa la estructura del torneo creando el bracket de ganadores inicial.
+     * @param participantes Lista de participantes inscritos.
+     * @return Lista de los primeros partidos del torneo.
+     */
     @Override
     public List<Partido> generarEnfrentamientos(List<Participante> participantes) {
         winnerBracket = new ArrayList<>(participantes);
@@ -32,6 +46,12 @@ public class EliminatoriaDoble implements FormatoTorneo, Serializable {
         return partidos;
     }
 
+    /**
+     * Valida que no existan empates en el resultado de un partido, ya que este formato
+     * requiere un ganador para avanzar a los brackets correspondientes.
+     * @param partido Partido a evaluar.
+     * @throws IllegalStateException si el resultado es un empate.
+     */
     @Override
     public void actualizarClasificacion(Partido partido) {
         Resultado resultado = partido.getResultado();
@@ -42,6 +62,16 @@ public class EliminatoriaDoble implements FormatoTorneo, Serializable {
         }
     }
 
+    /**
+     * Calcula la siguiente ronda de partidos basándose en los resultados de la ronda anterior.
+     * Esta lógica gestiona:
+     * El descenso de perdedores del Winner Bracket al Loser Bracket.
+     * La eliminación definitiva de perdedores en el Loser Bracket.
+     * La transición hacia la Gran Final.
+     * El posible "reset" del bracket si el ganador del Loser Bracket vence al del Winner.
+     * @param rondaActual Lista de partidos que se acaban de jugar.
+     * @return Lista de nuevos partidos generados para la siguiente fase.
+     */
     public List<Partido> generarSiguienteRonda(List<Partido> rondaActual) {
         List<Partido> siguientes = new ArrayList<>();
 

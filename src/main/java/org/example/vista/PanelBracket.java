@@ -11,6 +11,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Panel encargado de visualizar la estructura del torneo, ya sea como una tabla de liga
+ * o como un bracket (cuadro de enfrentamientos).
+ * Esta clase implementa el patrón {@link Observador}, lo que le permite actualizarse
+ * automáticamente cada vez que el estado o los datos del torneo cambian.
+ */
+
 public class PanelBracket extends JPanel implements Observador {
     private final VentanaPrincipal ventana;
     private final RegistroTorneos registro;
@@ -30,6 +37,11 @@ public class PanelBracket extends JPanel implements Observador {
     private static final Color GRIS_BOTON = new Color(77, 77, 77);
     private static final Color ACENTO = new Color(249, 190, 17);
 
+    /**
+     * Construye el panel visual del bracket del torneo.
+     * @param ventana Referencia a la ventana principal para gestionar la navegación.
+     * @param registro Registro central para consultar datos de torneos y usuarios.
+     */
     public PanelBracket(VentanaPrincipal ventana, RegistroTorneos registro) {
         this.ventana = ventana;
         this.registro = registro;
@@ -112,6 +124,11 @@ public class PanelBracket extends JPanel implements Observador {
         add(panelSur, BorderLayout.SOUTH);
     }
 
+    /**
+     * Prepara la interfaz para visualizar un torneo específico.
+     * Si es la primera vez que se visualiza, se registra como observador del mismo.
+     * @param torneo El torneo que se desea mostrar.
+     */
     public void mostrarTorneo(Torneo torneo) {
         this.torneoActual = torneo;
         if(torneoActual != null && torneoObservados.add(torneo.getId())) {
@@ -121,12 +138,20 @@ public class PanelBracket extends JPanel implements Observador {
         ventana.cambiarPantalla("BRACKET");
     }
 
+    /**
+     * Método de la interfaz {@link Observador}. Se ejecuta cuando el torneo notifica un cambio.
+     * @param torneo El torneo actualizado.
+     */
     @Override
     public void actualizar(Torneo torneo) {
         if(torneo == null || torneo != torneoActual) return;
         SwingUtilities.invokeLater(this::repintarContenido);
     }
 
+    /**
+     * Redibuja completamente el contenido del panel basándose en el estado actual del torneo.
+     * Incluye la lógica para mostrar la tabla de liga o el bracket.
+     */
     private void repintarContenido() {
         if(torneoActual == null) return;
         panelContenido.removeAll();
@@ -160,7 +185,9 @@ public class PanelBracket extends JPanel implements Observador {
         panelContenido.repaint();
     }
 
-    //Generacion de la tabla con puntajes
+    /**
+     *Generacion de la tabla con puntajes
+     */
     private void construirTablaLiga(LigaSimple liga, boolean esAdmin) {
         panelContenido.add(crearSubtitulo("Tabla de posiciones"));
 
@@ -198,7 +225,10 @@ public class PanelBracket extends JPanel implements Observador {
         }
     }
 
-    //Metodo encargado de construir el bracket del torneo actual
+    /**
+     * Metodo encargado de construir el bracket del torneo actual
+     * @param esAdmin
+     */
     private void construirBracket(boolean esAdmin) {
         List<List<Partido>> rondas = torneoActual.obtenerRondas();
         int totalRondas = rondas.size();
@@ -272,6 +302,12 @@ public class PanelBracket extends JPanel implements Observador {
         }
     }
 
+    /**
+     * Crea un panel que representa una fila individual de un partido dentro del bracket.
+     * @param partido El partido a mostrar.
+     * @param esAdmin Indica si se deben mostrar botones de control.
+     * @return Panel configurado con la información del enfrentamiento.
+     */
     private JPanel crearFilaPartido(Partido partido, boolean esAdmin){
         JPanel fila = new JPanel(new BorderLayout(10, 0));
         fila.setBackground(TARJETA);
@@ -322,6 +358,10 @@ public class PanelBracket extends JPanel implements Observador {
         return fila;
     }
 
+    /**
+     * Despliega un diálogo emergente para que el administrador programe fecha y hora de un partido.
+     * @param partido El partido que se desea programar.
+     */
     private void abrirDialogoFecha(Partido partido) {
         JTextField txtFecha = new JTextField("DD/MM/YYYY HH:MM");
         Object[] message = { "Ingrese fecha y hora del encuentro:", txtFecha };
@@ -339,6 +379,12 @@ public class PanelBracket extends JPanel implements Observador {
         }
     }
 
+    /**
+     * Despliega un diálogo emergente para que el administrador ingrese los resultados del enfrentamiento.
+     * @param partido El partido finalizado.
+     * @param nombreA Nombre del participante A.
+     * @param nombreB Nombre del participante B.
+     */
     private void abrirDialogoResultado(Partido partido, String nombreA, String nombreB){
         JTextField txtA = new JTextField();
         JTextField txtB = new JTextField();
@@ -370,6 +416,11 @@ public class PanelBracket extends JPanel implements Observador {
         }
     }
 
+    /**
+     * Crea un {@link JLabel} con el estilo predefinido para los subtítulos de las rondas.
+     * @param texto Texto a mostrar.
+     * @return Etiqueta estilizada.
+     */
     private JLabel crearSubtitulo(String texto){
         JLabel lbl = new JLabel(texto);
         lbl.setForeground(ACENTO);
@@ -379,6 +430,10 @@ public class PanelBracket extends JPanel implements Observador {
         return lbl;
     }
 
+    /**
+     * Aplica el estilo visual (colores y fuentes) a los botones del panel.
+     * @param btn Botón a estilizar.
+     */
     private void estilizarBoton(JButton btn){
         btn.setBackground(GRIS_BOTON);
         btn.setForeground(Color.WHITE);

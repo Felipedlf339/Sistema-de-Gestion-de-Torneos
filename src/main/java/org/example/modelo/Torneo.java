@@ -10,6 +10,7 @@ import java.time.LocalDate;
 /**
  * Clase principal
  * Representa un Torneo deportivo o de juegos.
+ * Implementa {@link Serializable} para persistencia de datos.
  */
 
 public class Torneo implements Serializable {
@@ -158,6 +159,16 @@ public class Torneo implements Serializable {
         notificarObservadores();
     }
 
+    /**
+     * Evalúa el estado actual del torneo y ejecuta la lógica de avanzar las rondas
+     * correspondiente según el formato definido.
+     * Este método actúa como un controlador central:
+     * 1. Verifica si existen rondas registradas.
+     * 2. Determina el formato de competencia (Eliminatoria Directa o Doble)
+     * y delega el proceso de avance al método privado correspondiente.
+     * 3. Al finalizar la evaluación de avance, actualiza el estado del torneo
+     * a {@link EstadoTorneo#FINALIZADO}.
+     */
     private void avanzarRondaSiCorresponde() {
         if (rondaLimites.isEmpty()) return;
 
@@ -169,6 +180,18 @@ public class Torneo implements Serializable {
         this.estado = EstadoTorneo.FINALIZADO;
     }
 
+    /**
+     * Avanza el torneo a la siguiente ronda cuando el formato es Eliminatoria Directa.
+     * El proceso sigue estos pasos:
+     * 1. Verifica que todos los partidos de la ronda actual tengan un resultado registrado.
+     * 2. Recopila los ganadores de cada partido.
+     * 3. Integra al participante que tuvo un "Bye" (pase directo) en la ronda anterior,
+     * si es que aún permanece en competencia.
+     * 4. Si solo queda un participante, lo establece como el campeón definitivo del torneo.
+     * 5. De lo contrario, genera los enfrentamientos de la siguiente ronda y actualiza
+     * los límites de control de rondas.
+
+     */
     private void avanzarEliminatoriaDirecta() {
         int inicioRondaActual = rondaLimites.size() > 1 ? rondaLimites.get(rondaLimites.size() - 2) : 0;
         int finRondaActual = rondaLimites.get(rondaLimites.size() - 1);
@@ -200,6 +223,13 @@ public class Torneo implements Serializable {
         rondaLimites.add(partidos.size());
     }
 
+    /**
+     * Avanza el torneo a la siguiente ronda cuando el formato es Eliminatoria Doble.
+     * Este método verifica que todos los partidos de la ronda actual tengan un resultado registrado.
+     * Luego, solicita al formato de torneo que genere los nuevos enfrentamientos.
+     * Finalmente, actualiza la lista de partidos del torneo y marca el límite de la nueva ronda.
+     * Si no se generan nuevos enfrentamientos, determina y asigna al campeón del torneo.
+     */
     private void avanzarEliminatoriaDoble() {
         int inicioRondaActual = rondaLimites.size() > 1 ? rondaLimites.get(rondaLimites.size() - 2) : 0;
         int finRondaActual = rondaLimites.get(rondaLimites.size() - 1);
